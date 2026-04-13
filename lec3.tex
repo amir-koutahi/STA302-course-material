@@ -1,0 +1,383 @@
+\section{Lecture 3: Sampling Distributions and Diagnostics}
+
+\subsection{Introduction to Sampling Distributions}
+
+\subsection{Estimated Parameters Randomness}
+
+\textbf{1. Data vs.\ model:} After data collection, we observe a single dataset. The values $x_i$ and $Y_i$ are fixed numbers in the observed sample, and this particular dataset does not change.
+
+\textbf{2. Why statistics treats $Y_i$ as random:} Statistical modeling does not describe only this one observed dataset; instead, it describes an underlying data-generating process. In the regression model:
+\[
+Y_i = \beta_0 + \beta_1 x_i + \varepsilon_i,
+\]
+the randomness comes from the error term $\varepsilon_i$. Because $\varepsilon_i$ is random, the response variables $Y_1, \ldots, Y_n$ are treated as random variables, even though their observed values are fixed after data collection.
+
+Under the regression model assumptions, the predictors $x_1, \ldots, x_n$ are fixed, while $Y_1, \ldots, Y_n$ are random. As a result, the least squares estimators are also random:
+\[
+\bhat{\beta}_1
+=
+\frac{\sum_{i=1}^n (Y_i - \bar{Y})(x_i - \bar{x})}
+{\sum_{i=1}^n (x_i - \bar{x})^2},
+\qquad
+\bhat{\beta}_0 = \bar{Y} - \bhat{\beta}_1 \bar{x}.
+\]
+
+The probability distribution of these estimators over repeated samples is called their \emph{sampling distribution}.
+
+\subsection{Estimated $\sigma^2$ Randomness}
+
+The estimator of the variance $\sigma^2$ is
+\[
+\hat{\sigma}^2
+=
+\frac{1}{\,n-(p+1)\,}
+\sum_{i=1}^n \left( Y_i - \hat{Y}_i \right)^2,
+\]
+where $\hat{Y}_i = \bhat{\beta}_0 + \bhat{\beta}_1 x_{i1} + \cdots + \bhat{\beta}_p x_{ip}$ is random with a sampling distribution. Thus $\sigma^2$ is also random with a sampling distribution.
+
+\subsection{Summary}
+
+\begin{itemize}
+  \item Regression model: $Y = X\beta + e$.
+  \item Population parameters/vectors: $\beta, \sigma^2$.
+  \item Theoretical estimators (random): $\bhat{\beta}, \hat{\sigma}^2$.
+  \item Sampling distribution: distribution of $\bhat{\beta}$ and $\hat{\sigma}^2$.
+  \item Data: $(x_1, y_1), \ldots, (x_n, y_n)$.
+  \item Estimates from the data (not random): compute numerical values of $\bhat{\beta}$ and $\hat{\sigma}^2$ using the data.
+\end{itemize}
+
+\subsection{Multiple Linear Regression Model}
+
+Recall the multiple linear regression model:
+\[
+Y_i = \beta_0 + \beta_1 x_{i1} + \cdots + \beta_p x_{ip} + \varepsilon_i,
+\qquad i = 1, \ldots, n.
+\]
+
+where
+\begin{itemize}
+  \item $\beta$ is the parameter vector of dimension $p+1$;
+  \item $\sigma^2$ is the error variance parameter;
+  \item $\varepsilon_i \sim \mathcal{N}(0,\sigma^2)$ are i.i.d.\ errors.
+\end{itemize}
+
+\subsection{Regression Model Assumptions}
+
+\begin{itemize}
+  \item \textbf{Linearity assumption:} $\E(\varepsilon_i)=0$, which implies
+  $\E(Y_i \mid X = x_i) = \beta_0 + \beta_1 x_{i1} + \cdots + \beta_p x_{ip}$.
+
+  \item \textbf{Constant error variance (homoscedasticity):} $\Var(\varepsilon_i)=\sigma^2$, which implies
+  $\Var(Y_i \mid X = x_i) = \sigma^2$.
+
+  \item \textbf{Uncorrelated and normal errors:}
+  $\Cov(\varepsilon_i,\varepsilon_j)=0$ for $i \neq j$, and
+  $\varepsilon_i \sim \mathcal{N}(0,\sigma^2)$.
+\end{itemize}
+
+\subsection{Residuals}
+
+The theoretical residual under the multiple linear regression model is random:
+\[
+\hat{e}_i = Y_i - \hat{Y}_i.
+\]
+
+In vector form:
+\[
+\hat{\mathbf{e}}
+= \mathbf{Y} - \mathbf{X}\bhat{\beta}
+= \mathbf{Y} - \mathbf{X}(\mathbf{X}^\top \mathbf{X})^{-1}\mathbf{X}^\top \mathbf{Y}
+= (I_n - H)\mathbf{Y},
+\]
+where $H = \mathbf{X}(\mathbf{X}^\top \mathbf{X})^{-1}\mathbf{X}^\top$ is the hat matrix.
+
+\begin{notebox}
+The computed residual from the data is a number: $\hat{e}_i = y_i - \hat{y}_i$, so $\hat{e}_i$ is a numerical value once the data are observed.
+\end{notebox}
+
+Given the predictors, the theoretical residuals satisfy
+\[
+\E(\hat{e}_i \mid X) = 0
+\quad \text{and} \quad
+\Var(\hat{e}_i \mid X) = \sigma^2 (1 - h_{ii}).
+\]
+
+\begin{itemize}
+  \item $h_{ii}$ are the diagonal entries of the hat matrix.
+  \item Generally, $h_{ii}$ are small.
+  \item The residuals $\hat{e}_i$ are not independent and are correlated.
+  \item If the errors $\varepsilon_i$ are normally distributed, then the residuals are normally distributed (but not standard normal).
+\end{itemize}
+
+\subsection{Leverage and Residual Variance}
+
+\begin{notebox}
+The variance of the raw residual is:
+\[
+\Var(\hat{e}_i) = \sigma^2(1 - h_{ii}),
+\]
+where $h_{ii}$ is the leverage of observation $i$.
+
+Hence, raw residuals do \emph{not} have equal variance. High-leverage points ($h_{ii}$ large) necessarily have smaller residual variance. This shrinkage is a geometric consequence of least squares, not a sign of good fit.
+\end{notebox}
+
+\subsection{Standardized Residuals}
+
+Standardized residuals are random and are defined by
+\[
+r_i = \frac{\hat{e}_i}{\hat{\sigma} \sqrt{1 - h_{ii}}}.
+\]
+
+Under the regression model assumption:
+\[
+\hat{\sigma}^2
+= \frac{\RSS}{n - (p+1)}
+\]
+is used to estimate $\sigma^2$. The denominator is the number of observations $n$ minus the number of estimated parameters $(p+1)$. In some textbooks, $s^2$ is used to denote $\hat{\sigma}^2$.
+
+\begin{notebox}
+\begin{itemize}
+\item The standardized residuals are correlated.
+\item The standardized residuals should be approximately $\mathcal{N}(0,1)$, but not exactly.
+\end{itemize}
+\end{notebox}
+
+\subsection{Residuals for Regression Diagnostics}
+
+\begin{itemize}
+  \item When the model is correct, the residuals are uncorrelated with the fitted values and the predictors.
+
+  \item When the model is correct, the scatterplot of residuals against the fitted values, or against any predictor, should have constant mean $0$. The residual plot should look like a null plot with no systematic pattern.
+
+  \item When the model is correct, the variance of the standardized residuals is not exactly constant but should be generally close to $1$.
+
+  \item When the model is correct, the residuals are correlated, but this is often not visible in residual plots.
+
+  \item When the model is correct, the standardized residuals should have mean $0$, be correlated, and have roughly a normal distribution $\mathcal{N}(0,1)$.
+\end{itemize}
+
+Under a correctly specified linear model:
+\[
+\Var(r_i) \approx 1, \qquad \E[r_i] \approx 0.
+\]
+
+\subsection{Key Conceptual Distinction}
+
+Raw residuals reflect both error behavior and leverage effects. Standardized residuals remove leverage-induced variance differences.
+
+\textbf{Interpretation rule:} If standardized residuals versus fitted values resemble unstructured noise, the linear model assumptions are consistent with the data.
+
+\subsection{Theoretical Derivations}
+
+\subsubsection*{Proof 1: Conditional Variance of the Response}
+
+Given the predictors $X$, the regression function is deterministic because it depends only on fixed quantities. Once $X$ is fixed, the conditional mean of $Y$ is a single fixed value and therefore has zero variance. As a result, all of the conditional variability in the response $Y$ comes entirely from the error term, which explains why the conditional variance of $Y$ given $X$ is equal to the variance of the error.
+
+\[
+\Var(Y_i \mid X=x_i)
+= \Var(\beta_0 + \beta_1 x_{i1} + \cdots + \beta_p x_{ip} + \varepsilon_i \mid X=x_i)
+= \Var(\varepsilon_i \mid X=x_i)
+= \sigma^2.
+\]
+
+\subsubsection*{Proof 2: Variance of Residuals}
+
+The residual vector is
+\[
+\hat{\mathbf{e}}
+= \mathbf{Y} - \mathbf{X}\bhat{\beta}
+= (I_n - H)\mathbf{Y},
+\]
+where
+\[
+H = \mathbf{X}(\mathbf{X}^\top \mathbf{X})^{-1}\mathbf{X}^\top.
+\]
+
+Substituting $\mathbf{Y} = \mathbf{X}\bbeta + \beps$:
+\[
+\hat{\mathbf{e}}
+= (I_n - H)(\mathbf{X}\bbeta + \beps)
+= (I_n - H)\beps,
+\]
+since the hat matrix $H$ projects onto the column space of $\mathbf{X}$, so $(I_n - H)\mathbf{X} = 0$.
+
+The covariance matrix of residuals is:
+\[
+\Var(\hat{\mathbf{e}} \mid X)
+= (I_n - H)\Var(\beps \mid X)(I_n - H)^\top.
+\]
+
+Substituting $\Var(\beps \mid X)=\sigma^2 I_n$:
+\[
+\Var(\hat{\mathbf{e}} \mid X)
+= \sigma^2 (I_n - H)(I_n - H)^\top.
+\]
+
+Since $I_n - H$ is a symmetric and idempotent projection matrix:
+\[
+\Var(\hat{\mathbf{e}} \mid X)
+= \sigma^2 (I_n - H).
+\]
+
+\subsection{Checking Normality of Errors in Linear Regression}
+
+In the classical linear regression model:
+\[
+Y = \mathbf{X}\beta + \varepsilon,
+\]
+one assumption used for inference is
+\[
+\varepsilon_i \sim \mathcal{N}(0,\sigma^2), \quad i = 1,\dots,n,
+\]
+independently.
+
+\subsection{Observed and Theoretical Quantiles}
+
+Let $r_1,\dots,r_n$ denote standardized (or studentized) residuals, and let
+\[
+r_{(1)} \le r_{(2)} \le \cdots \le r_{(n)}
+\]
+be the ordered residuals.
+
+For each ordered residual $r_{(i)}$, define the corresponding probability level:
+\[
+p_i = \frac{i - 0.5}{n}.
+\]
+
+The \emph{theoretical quantile} associated with $p_i$ is
+\[
+z_i = \Phi^{-1}(p_i),
+\]
+where $\Phi^{-1}$ is the inverse cumulative distribution function of the standard normal distribution.
+
+Thus, the normal Q--Q plot consists of the points:
+\[
+(z_i, r_{(i)}), \quad i = 1,\dots,n.
+\]
+
+\subsection{Interpretation of the Q--Q Plot}
+
+If the regression errors are approximately normally distributed, then the standardized residuals satisfy
+\[
+r_i \approx \mathcal{N}(0,1),
+\]
+and therefore
+\[
+r_{(i)} \approx z_i.
+\]
+
+In this case, the Q--Q plot exhibits an approximately straight line.
+
+Typical departures from normality appear as follows:
+\begin{itemize}
+  \item S-shaped curvature indicates skewness,
+  \item outward bending in the tails indicates heavy-tailed errors,
+  \item inward bending in the tails indicates light-tailed errors,
+  \item isolated extreme points indicate outliers.
+\end{itemize}
+
+Small random deviations from the reference line are expected and do not invalidate the model.
+
+\subsection{Role of Standardized Residuals}
+
+Raw residuals do not have constant variance due to leverage effects. Standardized (or studentized) residuals remove this variance heterogeneity, making distributional diagnostics meaningful.
+
+Normality should therefore be assessed using standardized or studentized residuals rather than raw residuals.
+
+\subsection{Summary of Diagnostics}
+
+The linearity assumption:
+\[
+\E(\varepsilon_i)=0 \quad \Rightarrow \quad \E(Y_i \mid X=x_i)=\beta_0+\beta_1 x_{i1}+\cdots+\beta_p x_{ip},
+\]
+is assessed using residuals versus fitted values and residuals versus predictors. A random scatter of residuals centered around zero with no systematic pattern supports the linearity assumption.
+
+Constant error variance (homoscedasticity):
+\[
+\Var(\varepsilon_i)=\sigma^2 \quad \Rightarrow \quad \Var(Y_i \mid X=x_i)=\sigma^2,
+\]
+is assessed using standardized residuals versus fitted values. An approximately constant vertical spread across the fitted range indicates homoscedasticity.
+
+Uncorrelated and normal errors:
+\[
+\Cov(\varepsilon_i,\varepsilon_j)=0 \ (i\neq j),
+\qquad \varepsilon_i \sim \mathcal{N}(0,\sigma^2),
+\]
+are assessed using a normal Q--Q plot of standardized (or studentized) residuals. An approximately linear Q--Q plot indicates that the normality assumption is reasonable.
+
+\subsection{Diagnostic Plots and Interpretation}
+
+\paragraph{Residuals vs.\ Fitted Values.}
+This plot is a general diagnostic for nonlinearity and gross heteroskedasticity. Mild changes in spread at extreme fitted values are expected due to leverage. The plot should show no systematic curvature or strong variance trends.
+
+\paragraph{Standardized Residuals vs.\ Fitted Values.}
+This is the primary diagnostic for the error structure. For a valid linear model, the plot should exhibit:
+\begin{itemize}
+  \item random scatter centered around zero,
+  \item approximately constant vertical spread,
+  \item no curvature, funnel shape, or clustering,
+  \item most points within the range $[-2,2]$, with very few beyond $\pm 3$.
+\end{itemize}
+
+Any visible structure in this plot indicates violation of model assumptions such as nonlinearity or heteroskedasticity.
+
+\paragraph{Standardized Residuals Histogram.}
+If your standardized residual histogram is roughly bell-shaped, symmetric around 0, with most values in $[-2, 2]$ and no extreme tails or multiple peaks, the normality assumption is reasonably satisfied. Minor deviations are usually acceptable; gross shape problems are not.
+
+\subsection{Quiz: Orthogonality of Residuals and Regressors}
+
+\textbf{Question:}
+Given the data points
+\[
+x = (1,2,3,4,5), \quad y = (2,4,5,4,11),
+\]
+fit a least squares regression line and compute
+\[
+\frac{1}{5}\sum_{i=1}^5 x_i e_i,
+\]
+where $e_i = y_i - \hat{y}_i$ are the residuals.
+
+\textbf{Answer:}
+If we compute the least squares fit and evaluate the residuals explicitly, a direct calculation shows that
+\[
+\sum_{i=1}^5 x_i e_i = 0.
+\]
+
+This result is not a coincidence and holds in general for least squares regression. To see this, consider the simple linear regression model:
+\[
+\hat{y}_i = \bhat{\beta}_0 + \bhat{\beta}_1 x_i,
+\qquad
+e_i = y_i - \hat{y}_i.
+\]
+
+The least squares estimator minimizes the residual sum of squares:
+\[
+\RSS(\beta_0,\beta_1)
+= \sum_{i=1}^n (y_i - \beta_0 - \beta_1 x_i)^2.
+\]
+
+To find the minimizing values, we differentiate $\RSS$ with respect to $\beta_1$:
+\[
+\frac{\partial \RSS}{\partial \beta_1}
+= \sum_{i=1}^n 2 (y_i - \beta_0 - \beta_1 x_i)(-x_i).
+\]
+
+Setting this derivative equal to zero:
+\[
+-2 \sum_{i=1}^n x_i (y_i - \beta_0 - \beta_1 x_i) = 0.
+\]
+
+Dividing by $-2$ and substituting $\bhat{\beta}_0, \bhat{\beta}_1$:
+\[
+\sum_{i=1}^n x_i (y_i - \hat{y}_i) = 0.
+\]
+
+Since $e_i = y_i - \hat{y}_i$, this becomes
+\[
+\sum_{i=1}^n x_i e_i = 0.
+\]
+
+\textbf{Interpretation:}
+The quantity $\sum_{i=1}^n x_i e_i$ is the dot product of the regressor vector $\mathbf{x} = (x_1,\dots,x_n)$ and the residual vector $\mathbf{e} = (e_1,\dots,e_n)$. Thus, the normal equation implies $\mathbf{x} \cdot \mathbf{e} = 0$, meaning that the residual vector is orthogonal to the regressor vector. Geometrically, least squares chooses the fitted values so that the residuals have no linear association with the predictor.
+
+\clearpage

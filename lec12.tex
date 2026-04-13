@@ -1,0 +1,310 @@
+\section{Lecture 12: Practice Problems}
+
+\subsection{Question 1}
+
+You are provided with a dataset containing three predictors $(X_1, X_2, X_3)$ and a response variable $Y$. Consider the following models and their corresponding AIC values.
+
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+Model & Description & AIC Value \\
+\hline
+Model 1 & $Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \beta_3 X_3 + \epsilon$ & 550.4 \\
+Model 2 & $Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \epsilon$ & 548.2 \\
+Model 3 & $Y = \beta_0 + \beta_1 X_1 + \epsilon$ & 545.9 \\
+Model 4 & $Y = \beta_0 + \beta_2 X_2 + \epsilon$ & 560.1 \\
+Model 5 & $Y = \beta_0 + \beta_2 X_2 + \beta_3 X_3 + \epsilon$ & 552.1 \\
+Model 6 & $Y = \beta_0 + \beta_3 X_3 + \epsilon$ & 565.7 \\
+Model 7 & $Y = \beta_0 + \beta_1 X_1 + \beta_3 X_3 + \epsilon$ & 547.4 \\
+Model 8 & $Y = \beta_0 + \epsilon$ & 590.0 \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{itemize}
+\item[(a)] Identify the null model and the full model.
+
+\item[(b)] What is the starting point of the algorithm in a forward selection method?
+
+\item[(c)] Using the forward selection method and the AIC values provided, which model would be selected as the final model? Show all your steps.
+\end{itemize}
+
+\clearpage
+
+\subsection{Question 2}
+
+A psychiatrist wants to know whether the level of pathology $(Y)$ in psychotic patients 6 months after treatment could be predicted with reasonable accuracy from knowledge of pretreatment symptom ratings of thinking disturbance $(X_1)$ and hostile suspiciousness $(X_2)$.
+
+\begin{itemize}
+\item[(a)] The least squares estimation equation involving both independent variables is given by
+\[
+\hat{Y} = -0.628 + 23.639X_1 - 7.147X_2.
+\]
+
+Using this equation, determine the predicted level of pathology $(Y)$ for a patient with pretreatment scores of 2.80 on thinking disturbance and 7.0 on hostile suspiciousness. How does the predicted value obtained compare with the actual value of 25 observed for this patient?
+
+\item[(b)] Using the analysis of variance tables below, carry out the overall F test for each of three models:
+
+\begin{itemize}
+\item[i)] model with $X_1$ alone;
+\item[ii)] model with $X_2$ alone; and
+\item[iii)] model with both $X_1$ and $X_2$.
+\end{itemize}
+
+\end{itemize}
+
+\begin{center}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+Source & DF & Sum Squares & Mean Squares & F value \\
+\hline
+Regression on $X_1$ & 1 & 1546 & & \\
+Residual & 51 & 12246 & & \\
+Total & & & & \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+Source & DF & Sum Squares & Mean Squares & F value \\
+\hline
+Regression on $X_2$ & 1 & 160 & & \\
+Residual & 51 & 12246 & & \\
+Total & & & & \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+Source & DF & Sum Squares & Mean Squares & F value \\
+\hline
+Regression on $X_1$ and $X_2$ & 2 & 2784 & & \\
+Residual & 50 & 11008 & & \\
+Total & & & & \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{itemize}
+\item[(c)] Based on your results in part (b), how would you rate the importance of the two variables in predicting $Y$?
+
+\item[(d)] What are the $R^2$ values for the three regressions referred to in part (b)?
+
+\item[(e)] Based on the above, in your opinion, which is the best model involving either one or both of the two independent variables?
+\end{itemize}
+
+\clearpage
+
+\subsection{Question 3}
+
+You are provided with the following regression outputs from R.
+
+\textbf{Model A:} $Y \sim X_1 + X_2 + X_3$
+
+\textbf{Call:}
+\begin{verbatim}
+lm(formula = Y ~ X1 + X2 + X3)
+\end{verbatim}
+
+\textbf{Coefficients:}
+\begin{verbatim}
+(Intercept)    X1      X2      X3
+   2.33      1.12   -0.56    0.43
+\end{verbatim}
+
+\textbf{Model B:} $X_1 \sim X_2 + X_3$
+
+\textbf{Call:}
+\begin{verbatim}
+lm(formula = X1 ~ X2 + X3)
+\end{verbatim}
+
+\begin{verbatim}
+Residual standard error: 0.51 on 96 degrees of freedom
+Multiple R-squared:  0.82,   Adjusted R-squared:  0.817
+F-statistic: 218.5 on 2 and 96 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\textbf{Model C:} $X_2 \sim X_1 + X_3$
+
+\textbf{Call:}
+\begin{verbatim}
+lm(formula = X2 ~ X1 + X3)
+\end{verbatim}
+
+\begin{verbatim}
+Residual standard error: 0.58 on 96 degrees of freedom
+Multiple R-squared:  0.79,   Adjusted R-squared:  0.788
+F-statistic: 181.2 on 2 and 96 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\textbf{Model D:} $X_3 \sim X_1 + X_2$
+
+\textbf{Call:}
+\begin{verbatim}
+lm(formula = X3 ~ X1 + X2)
+\end{verbatim}
+
+\begin{verbatim}
+Residual standard error: 0.62 on 96 degrees of freedom
+Multiple R-squared:  0.76,   Adjusted R-squared:  0.758
+F-statistic: 152.7 on 2 and 96 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\textbf{Questions:}
+
+\begin{itemize}
+\item[(a)] Using the outputs of Models B, C, and D, compute the VIF for $X_1$, $X_2$, and $X_3$, respectively.
+
+\item[(b)] Interpret each VIF. What do they tell you about the presence of multicollinearity among the predictors in Model A?
+
+\item[(c)] Which predictor shows the strongest evidence of multicollinearity?
+\end{itemize}
+
+\clearpage
+
+\subsection{Question 4}
+
+A study was performed on wear of a bearing $y$ and its relationship to $x_1 =$ oil viscosity and $x_2 =$ load. The following data were obtained:
+
+\begin{center}
+\begin{tabular}{ccc}
+$y$ & $x_1$ & $x_2$ \\
+\hline
+193 & 1.6 & 851 \\
+230 & 15.5 & 816 \\
+172 & 22.0 & 1058 \\
+91  & 43.0 & 1201 \\
+113 & 33.0 & 1357 \\
+125 & 40.0 & 1115 \\
+\end{tabular}
+\end{center}
+
+\begin{itemize}
+\item[(a)] Fit a multiple linear regression model to the data.
+
+Hint:
+\[
+(X^\top X)^{-1} =
+\begin{pmatrix}
+8.5951 & 0.08096 & -0.00987 \\
+0.08096 & 0.00210 & -0.00013 \\
+-0.00987 & -0.00013 & 0.0001233
+\end{pmatrix}
+\]
+
+\item[(b)] Test for significance of regression at the $\alpha = 5\%$ significance level. (Hint: $F_{\alpha,p,n-p-1} = F_{0.05,2,3} = 9.55$.)
+
+\item[(c)] Compute $t$ statistics for each model parameter at the $\alpha = 5\%$ significance level. What conclusions can you draw? (Hint: Use the following R outputs to answer the question:)
+
+\end{itemize}
+
+\begin{verbatim}
+> qt(.95, 3)
+[1] 2.353363
+
+> qt(.975, 4)
+[1] 2.776445
+
+> qt(.975, 3)
+[1] 3.182446
+
+> qt(.95, 4)
+[1] 2.131847
+\end{verbatim}
+
+\begin{verbatim}
+> vcov(model)
+             (Intercept)         x1          x2
+(Intercept) 5588.022066  52.63400843  -6.414743100
+x1            52.634008   1.36688855  -0.082498553
+x2            -6.414743  -0.08249855   0.008015562
+\end{verbatim}
+
+\begin{itemize}
+\item[(d)] Construct a 95\% confidence interval for the mean response of $y$ when $x_1 = 25$ and $x_2 = 1000$.
+
+\item[(e)] Construct a 95\% prediction interval for a future observation of $y$ when $x_1 = 25$ and $x_2 = 1000$.
+\end{itemize}
+
+\clearpage
+
+\subsection{Question 5}
+
+We investigate the use of the test set approach to estimate the test error rates of three different linear regression models fitted to the Auto dataset, which contains 392 observations. Each model uses a different degree of polynomial for the horsepower predictor. A random sample of 196 observations is used as the training set, and the test error is computed on the remaining observations.
+
+\begin{verbatim}
+> library(ISLR2)
+> set.seed(302)
+> train <- sample(392, 196)
+> lm.fit <- lm(mpg ~ horsepower, data=Auto, subset=train)
+> mean((mpg - predict(lm.fit, Auto))[-train]^2)
+[1] 27.19734
+> lm.fit2 <- lm(mpg ~ poly(horsepower, 2), data=Auto, subset=train)
+> mean((mpg - predict(lm.fit2, Auto))[-train]^2)
+[1] 19.89617
+> lm.fit3 <- lm(mpg ~ poly(horsepower, 3), data=Auto, subset=train)
+> mean((mpg - predict(lm.fit3, Auto))[-train]^2)
+[1] 19.86686
+\end{verbatim}
+
+\begin{itemize}
+\item[(a)] Write down the mathematical expressions for the three models using $Y$ for the response and $x$ for the predictor.
+
+\item[(b)] Report the estimated test error for each model. Based on these results, which model has the best test performance?
+
+\item[(c)] For the model selected in part (b), write the R code to estimate the mean squared error (MSE) using leave-one-out cross-validation.
+\end{itemize}
+
+\clearpage
+
+\subsection{Question 6}
+
+Use Exercise 1 in Chapter 3 of Sheather, along with the associated R output, to answer the following questions.
+
+\begin{itemize}
+\item[(a)] Compute the diagonal elements of the hat matrix, $h_{ii}$, for the fitted model. Verify that the two largest values are approximately 0.237 and 0.243. Do these observations correspond to high-leverage points? Justify your answer based on a commonly used threshold.
+
+\item[(b)] Investigate whether the 13th and 17th observations are influential. To do this, compute and interpret their corresponding DFFITS, DFBETAS, and Cook's distance. Use appropriate thresholds to support your conclusion.
+\end{itemize}
+
+\clearpage
+
+\subsection{Question 7}
+
+\begin{itemize}
+\item[(a)] Derive the least squares estimators of the simple linear regression model, i.e., show that
+\[
+\hat{\beta}_0 = \bar{Y} - \hat{\beta}_1 \bar{x}
+\quad \text{and} \quad
+\hat{\beta}_1 = \frac{\sum_{i=1}^{n} (x_i - \bar{x})(Y_i - \bar{Y})}{\sum_{i=1}^{n} (x_i - \bar{x})^2}.
+\]
+
+\item[(b)] Compute the expected values of the least squares estimators.
+
+\item[(c)] Compute the variances of the least squares estimators.
+\end{itemize}
+
+\clearpage
+
+\subsection{Question 8}
+
+Consider the multiple regression model:
+\[
+Y_i = \beta_1 x_{i1} + \beta_2 x_{i1}^2 + \beta_3 x_{i2} + \epsilon_i, \quad i = 1, \cdots, n
+\]
+where the errors $\epsilon_i$ are independent $N(0, \sigma^2)$.
+
+\begin{itemize}
+\item[(a)] Use the least squares criterion to derive the least squares estimators $\hat{\beta}_1$, $\hat{\beta}_2$, and $\hat{\beta}_3$.
+
+\item[(b)] Compute the expected values of the least squares estimators.
+
+\item[(c)] Compute the variances of the least squares estimators.
+\end{itemize}
+
+\clearpage

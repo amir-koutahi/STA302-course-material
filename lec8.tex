@@ -1,0 +1,441 @@
+\section{Lecture 8: Model Selection, $R^2$, and Multicollinearity}
+
+\subsection{Review of Distributions}
+
+\[
+F = \frac{\chi^2_m / m}{\chi^2_n / n} \sim F_{m,n},
+\]
+
+\[
+T = \frac{Z}{\sqrt{\chi^2_n / n}} \sim t_n, \quad Z \sim N(0,1),
+\]
+
+\[
+\chi^2_n = \sum_{i=1}^n Z_i^2, \quad Z_i \sim N(0,1),
+\]
+
+\[
+t_n^2 \sim F_{1,n}.
+\]
+
+\subsection{SLR F-Test Review}
+
+\textbf{Model:} $Y = \beta_0 + \beta_1 X + \varepsilon$.
+
+\textbf{t-test:} $H_0: \beta_1 = 0 \quad H_1: \beta_1 \neq 0$.
+\[
+T = \frac{\bhat{\beta}_1 - \beta_1}{\hat{\sigma}/\sqrt{s_{xx}}} \sim t_{n-2}.
+\]
+
+\textbf{F-test:} $H_0: \beta_1 = 0 \quad H_1: \beta_1 \neq 0$.
+\[
+F = \frac{\SSreg/1}{\RSS/(n-2)} \sim F_{1,n-2}.
+\]
+
+\textbf{Relationship:} $T_{\text{observed}}^2 = F_{\text{observed}}$.
+
+\subsection{Partial F-Test}
+
+Test whether a subset of $k$ predictors should be jointly added to a model that already includes the other $p - k$ predictors.
+
+\textbf{Full model:}
+\[
+Y = \beta_0 + \beta_1 x_1 + \cdots + \beta_p x_p + \varepsilon.
+\]
+
+\textbf{Reduced model:}
+\[
+Y = \beta_0 + \beta_{k+1} x_{k+1} + \cdots + \beta_p x_p + \varepsilon.
+\]
+
+\textbf{Hypothesis:}
+\[
+H_0: \beta_1 = \beta_2 = \cdots = \beta_k = 0,
+\]
+where $k < $ number of predictors.
+\[
+H_1: \text{at least one } \beta_j \neq 0.
+\]
+
+For $p$ predictors, there are $2^p$ models that can be constructed.
+
+\begin{keyresult}[Comparison of Models]
+\[
+\SST_{\text{full}} = \SST_{\text{reduced}},
+\]
+\[
+\RSS_{\text{reduced}} \ge \RSS_{\text{full}},
+\]
+\[
+\mathrm{SS}_{\mathrm{reg,reduced}} \le \mathrm{SS}_{\mathrm{reg,full}}.
+\]
+
+If $\RSS_{\text{reduced}} \gg \RSS_{\text{full}}$, prefer the full model.
+If $\RSS_{\text{reduced}} \approx \RSS_{\text{full}}$, prefer the reduced model.
+\end{keyresult}
+
+\subsubsection{Degrees of Freedom}
+
+\[
+df_{\text{full}} = n - p - 1,
+\]
+
+\[
+df_{\text{reduced}} = n - (p - k) - 1,
+\]
+
+\[
+df_{\text{difference}} = k.
+\]
+
+\subsubsection{Test Statistic}
+
+\begin{keyresult}[Partial F-Test Statistic]
+\[
+F = \frac{(\RSS_{\text{reduced}} - \RSS_{\text{full}})/k}{\RSS_{\text{full}}/(n - p - 1)} \sim F_{k, n-p-1}.
+\]
+\end{keyresult}
+
+\textbf{Decision rule:}
+\begin{itemize}
+\item The test rejects $H_0$ at level $\alpha$ if $\text{p-value} < \alpha$ or if
+\[
+F_{\text{obs}} \geq F_{\alpha,\,k,\,n-p-1}.
+\]
+\begin{itemize}
+\item There exists a statistically significant linear relationship between $Y$ and at least one of the $k$ predictors.
+\item We prefer the full model.
+\end{itemize}
+
+\item The test fails to reject $H_0$ at level $\alpha$ if $\text{p-value} > \alpha$ or if
+\[
+F_{\text{obs}} < F_{\alpha,\,k,\,n-p-1}.
+\]
+\begin{itemize}
+\item There does not exist a statistically significant linear relationship between $Y$ and any of the $k$ predictors.
+\item We prefer the reduced model.
+\end{itemize}
+\end{itemize}
+
+The number of possible models for $p$ predictors is
+\[
+\text{Number of models} = 2^p.
+\]
+
+\subsection{Case Study}
+
+Assume a response variable $Y$ and two predictors $X_1, X_2$:
+\[
+Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \varepsilon.
+\]
+
+\textbf{Step 1: t-Tests}. We perform individual t-tests:
+\[
+H_0: \beta_1 = 0, \qquad H_0: \beta_2 = 0.
+\]
+
+Suppose the p-value for $\beta_1$ is large (p-value $= 0.88$).
+
+\textbf{Step 2: F-Test}. Test overall model significance:
+\[
+H_0: \beta_1 = \beta_2 = 0
+\quad \text{vs} \quad
+H_1: \beta_1 \neq 0 \text{ or } \beta_2 \neq 0.
+\]
+
+Assume the p-value is very small ($p\text{-value} = 2.5 \times 10^{-6}$). Thus, the null model is not preferred.
+
+\textbf{Step 3: Partial F-Test}. Compare nested models:
+\[
+\text{Model 1 (reduced): } Y = \beta_0 + \beta_2 X_2 + \varepsilon \quad (\beta_1 = 0),
+\]
+\[
+\text{Model 2 (full): } Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \varepsilon.
+\]
+
+\begin{itemize}
+\item If p-value is large, prefer the reduced model.
+\item If p-value is small, prefer the full model.
+\end{itemize}
+
+\subsection{Coefficient of Determination}
+
+\begin{defn}{$R^2$}{def:r2}
+$R^2$ measures the proportion of variation in the response variable $Y$ that is explained by the model:
+\[
+R^2 = \frac{\SSreg}{\SST} = 1 - \frac{\RSS}{\SST}.
+\]
+\end{defn}
+
+\[
+0 \le R^2 \le 1.
+\]
+
+\subsubsection{Interpretation of $R^2$ (Multiple Regression)}
+
+If $R^2 = 1$, then $\RSS = 0$. All observed points lie exactly on the fitted regression hyperplane, and the covariates $X_1, X_2, \dots, X_p$ account for all variation in $Y$.
+
+When $\bhat{\beta}_1 = \bhat{\beta}_2 = \cdots = \bhat{\beta}_p = 0$, then $R^2 = 0$. The model explains no variation in the response variable; equivalently, there is no linear association between $X_1, X_2, \dots, X_p$ and $Y$ in the sample data.
+
+The closer $R^2$ is to 1, the stronger the linear association between the covariates $X_1, X_2, \dots, X_p$ and the response variable $Y$.
+
+\subsection{Coefficient of Correlation}
+
+The sample correlation coefficient ($r$) for $n$ pairs $(x_1, y_1), \dots, (x_n, y_n)$ is defined as
+\[
+r = \frac{\sum_{i=1}^{n} (x_i - \bar{x})(y_i - \bar{y})}
+{\sqrt{\sum_{i=1}^{n} (x_i - \bar{x})^2}\sqrt{\sum_{i=1}^{n} (y_i - \bar{y})^2}}
+= \frac{S_{xy}}{\sqrt{S_{xx}}\sqrt{S_{yy}}}.
+\]
+
+\[
+-1 \leq r \leq 1.
+\]
+
+In simple linear regression,
+\[
+r = \operatorname{sign}(\bhat{\beta}_1)\sqrt{R^2}.
+\]
+
+\subsection{Coefficient of Correlation: Proof that $r^2 = R^2$}
+
+The sign is clear; it remains to verify that $r^2 = R^2$.
+
+\[
+r^2 = \frac{\left(\sum_{i=1}^{n} (x_i - \bar{x})(y_i - \bar{y})\right)^2}
+{\sum_{i=1}^{n} (x_i - \bar{x})^2 \sum_{i=1}^{n} (y_i - \bar{y})^2}
+= \frac{\bhat{\beta}_1 \sum_{i=1}^{n} (x_i - \bar{x})(y_i - \bar{y})}{\SST}.
+\]
+
+\[
+\bhat{\beta}_1 \sum_{i=1}^{n} (x_i - \bar{x})(y_i - \bar{y})
+= \bhat{\beta}_1 \left(\mathbf{x} - \frac{1}{n}\bX\mathbf{x}\right)^\top
+\left(\mathbf{y} - \frac{1}{n}\bX\mathbf{y}\right)
+\]
+
+\[
+= \bhat{\beta}_1 \mathbf{x}^\top \left(\mathbf{I} - \frac{1}{n}\bX\right)\mathbf{y}
+\]
+
+\[
+= (\bhat{\beta}_0 \mathbf{1} + \bhat{\beta}_1 \mathbf{x} - \bhat{\beta}_0 \mathbf{1})^\top
+\left(\mathbf{I} - \frac{1}{n}\bX\right)\mathbf{y}
+\]
+
+\[
+= (\mathbf{H}\mathbf{y})^\top \left(\mathbf{I} - \frac{1}{n}\bX\right)\mathbf{y}
+- \bhat{\beta}_0 \mathbf{1}^\top \left(\mathbf{I} - \frac{1}{n}\bX\right)\mathbf{y}
+\]
+
+\[
+= \mathbf{y}^\top \left(\mathbf{H} - \frac{1}{n}\bX\right)\mathbf{y}
+= \SSreg.
+\]
+
+\textbf{Result:}
+\[
+r^2 = \frac{\bhat{\beta}_1 \sum_{i=1}^{n} (x_i - \bar{x})(y_i - \bar{y})}{\SST}
+= \frac{\SSreg}{\SST} = R^2.
+\]
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\linewidth]{pictures/1.png}
+\end{figure}
+
+\subsection{Cautions When Interpreting $R^2$}
+
+\begin{caution}
+There are no general rules about how large $R^2$ should be.
+
+It is possible to have a large value of $R^2$ even when the linear regression model is not ideal.
+
+$R^2$ is not meaningful if a linear regression model is not appropriate.
+
+It is possible to obtain very high $R^2$ by fitting overly complicated models in multiple linear regression.
+\end{caution}
+
+\subsubsection{Model Comparison Using $R^2$}
+
+\textbf{Models:}
+\[
+\text{Model 1: } Y = \beta_0 + \beta_1 X_1 + \varepsilon,
+\]
+\[
+\text{Model 2: } Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \varepsilon,
+\]
+\[
+\text{Model 3: } Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \beta_3 X_3 + \varepsilon.
+\]
+
+\textbf{Always:}
+\[
+R^2(\text{Model 3}) \geq R^2(\text{Model 2}) \geq R^2(\text{Model 1}).
+\]
+
+\begin{caution}
+Thus, $R^2$ cannot be used to compare models with different numbers of predictors. Use adjusted $R^2$ instead.
+\end{caution}
+
+\subsection{Adjusted $R^2$}
+
+\textbf{Recall:}
+\[
+R^2 = \frac{\SSreg}{\SST} = 1 - \frac{\RSS}{\SST},
+\qquad R^2 \in [0,1].
+\]
+
+As the number of covariates increases, $R^2$ also increases. Therefore, $R^2$ is not suitable for comparing different models. To compare models with different numbers of predictors, use $R^2_{\text{adj}}$ instead of $R^2$.
+
+\begin{keyresult}[Adjusted $R^2$]
+The adjusted $R^2$ is defined as
+\[
+R^2_{\text{adj}} = 1 - \frac{\RSS/(n - p - 1)}{\SST/(n - 1)}
+= 1 - \frac{n - 1}{n - p - 1}\frac{\RSS}{\SST}.
+\]
+
+\[
+-\frac{p}{n - p - 1} \leq R^2_{\text{adj}} \leq R^2.
+\]
+\end{keyresult}
+
+\subsection{Example: Computing $R^2$ and $R^2_{\text{adj}}$}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{pictures/2.png}
+\end{figure}
+
+\textbf{Given:}
+\[
+\SSreg = 352.87, \quad \RSS = 111.46, \quad n = 150, \quad p = 1.
+\]
+
+\[
+R^2 = \frac{\SSreg}{\SST}
+= \frac{352.87}{352.87 + 111.46}
+\approx 0.76.
+\]
+
+\[
+R^2_{\text{adj}} = 1 - \frac{n - 1}{n - p - 1}\cdot \frac{\RSS}{\SST}
+= 1 - \frac{150 - 1}{150 - 1 - 1} \cdot \frac{111.46}{352.87 + 111.46}
+\approx 0.68.
+\]
+
+\textbf{Interpretation:} Approximately 76\% of the variation in $Y$ is explained by the model. After adjusting for the number of predictors, about 68\% of the variation remains explained. This indicates a reasonably strong fit, though the drop from $R^2$ to $R^2_{\text{adj}}$ reflects the penalty for model complexity.
+
+\subsection{Multicollinearity}
+
+Consider a multiple linear model with $p$ predictors:
+\[
+Y = \beta_0 + \beta_1 x_1 + \cdots + \beta_p x_p + \varepsilon,
+\qquad \varepsilon \sim N(0,\sigma^2).
+\]
+
+The least squares estimator is
+\[
+\bbeta = (\bX^\top \bX)^{-1} \bX^\top \bY.
+\]
+
+Under $\varepsilon \sim N_n(0,\sigma^2 I)$,
+\[
+\bbeta \sim N_{p+1}\!\left(\bbeta,\, \sigma^2 (\bX^\top \bX)^{-1}\right).
+\]
+
+For $j = 0,1,\dots,p$,
+\[
+\bhat{\beta}_j \sim N\!\left(\beta_j,\, \sigma^2 (\bX^\top \bX)^{-1}_{j+1,j+1}\right),
+\qquad
+\Var(\bhat{\beta}_j) = \sigma^2 (\bX^\top \bX)^{-1}_{j+1,j+1}.
+\]
+
+\begin{caution}
+\boxed{\Var(\bhat{\beta}_j) \text{ becomes large when other predictors are highly linearly correlated with } x_j.}
+\end{caution}
+
+\subsection{Two Predictors and Variance Inflation}
+
+Consider
+\[
+Y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \varepsilon.
+\]
+
+Let $r_{12}$ be the correlation between $x_1$ and $x_2$, and let $S_{x_j}$ be the standard deviation of $x_j$. Then for $j=1,2$,
+\[
+\Var(\bhat{\beta}_j)
+= \frac{1}{1 - r_{12}^2}\cdot \frac{\sigma^2}{(n-1) S_{x_j}^2}.
+\]
+
+When $|r_{12}|$ is large, $\Var(\bhat{\beta}_j)$ becomes large.
+
+\subsubsection{Conclusion}
+
+Multicollinearity increases the variance of coefficient estimates, making them unstable and less reliable.
+
+\subsection{Variance Inflation Factor (VIF)}
+
+Correlation among predictors increases the variance of the estimated regression coefficients by a factor of
+\[
+\frac{1}{1 - r_{12}^2}.
+\]
+
+\subsubsection{Example (Two Predictors)}
+
+When $r_{12} = 0.99$ (highly correlated),
+\[
+\Var(\bhat{\beta}_j)
+= \frac{1}{1 - 0.99^2}\cdot \frac{\sigma^2}{(n-1)S_{x_j}^2}
+= 50.25 \cdot \frac{\sigma^2}{(n-1)S_{x_j}^2}.
+\]
+
+When $r_{12} = 0$ (no correlation),
+\[
+\Var(\bhat{\beta}_j)
+= \frac{1}{1 - 0^2}\cdot \frac{\sigma^2}{(n-1)S_{x_j}^2}
+= \frac{\sigma^2}{(n-1)S_{x_j}^2}.
+\]
+
+\subsection{General Case: $p$ Predictors}
+
+Consider
+\[
+Y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \cdots + \beta_p x_p + \varepsilon.
+\]
+
+To measure how well $x_j$ is explained by the other predictors, define
+\[
+x_j = \alpha_0 + \sum_{k \ne j} \alpha_k x_k + \varepsilon.
+\]
+
+Let $R_j^2$ be the coefficient of determination from this regression. Then
+\[
+\Var(\bhat{\beta}_j)
+= \frac{1}{1 - R_j^2}\cdot \frac{\sigma^2}{(n-1)S_{x_j}^2},
+\qquad j = 1,2,\dots,p.
+\]
+
+\subsection{Variance Inflation Factor}
+
+\begin{defn}{Variance Inflation Factor}{def:vif}
+\[
+\mathrm{VIF}(\bhat{\beta}_j) = \frac{1}{1 - R_j^2}.
+\]
+
+It measures how much the variance of $\bhat{\beta}_j$ is inflated due to multicollinearity.
+\end{defn}
+
+\subsection{Rule of Thumb}
+
+\begin{caution}
+\[\boxed{
+\mathrm{VIF}(\bhat{\beta}_j) > 5 \;\;\Rightarrow\;\; \text{possible severe multicollinearity}
+\quad (\text{often } >10 \text{ is considered strong}).}
+\]
+\end{caution}
+
+\begin{notebox}
+\textbf{Note:} $R_j^2$ measures how well $X_j$ can be predicted by the other predictors. $R_j^2 \neq$ overall $R^2$.
+\end{notebox}
+
+\clearpage

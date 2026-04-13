@@ -1,0 +1,595 @@
+\section{Lecture 1: Simple Linear Regression}
+
+\subsection{Regression: Basic Concepts}
+
+Regression aims to find the \emph{best} function
+\[
+f : \mathbb{R}^p \to \mathbb{R}
+\]
+such that
+\[
+Y \approx f(x_1, \dots, x_p), \qquad p \ge 1.
+\]
+
+\begin{itemize}
+    \item $Y$ is called the \textbf{response} or \textbf{dependent variable}.
+    \item $x_1, \dots, x_p$ are called \textbf{explanatory}, \textbf{independent}, or \textbf{predictor variables}.
+    \item Predictors are also referred to as \textbf{covariates} or \textbf{features}.
+\end{itemize}
+
+\subsection{Simple vs.\ Multiple Regression}
+
+\begin{itemize}
+    \item When $p = 1$:
+    \[
+    Y \approx f(x) \quad \Rightarrow \quad \textbf{Simple Regression}.
+    \]
+    \item When $p > 1$:
+    \[
+    Y \approx f(x_1, \dots, x_p) \quad \Rightarrow \quad \textbf{Multiple Regression}.
+    \]
+\end{itemize}
+
+In this lecture, we focus on \textbf{simple regression}.
+
+\subsection{Parametric Regression}
+
+In general, it is difficult to determine the ``best'' function $f$.
+
+To make the problem tractable, we \emph{specify the form of $f$ using a finite number of parameters}.
+This approach is called \textbf{parametric regression}.
+
+\subsection{Examples}
+
+\begin{enumerate}
+    \item Constant model:
+    \[
+    f(x) = \beta_0
+    \]
+    \item Linear model:
+    \[
+    f(x) = \beta_0 + \beta_1 x
+    \]
+    \item Quadratic model:
+    \[
+    f(x) = \beta_0 + \beta_1 x + \beta_2 x^2
+    \]
+\end{enumerate}
+
+In each case, the function $f$ depends on unknown parameters $\beta_0, \beta_1, \beta_2, \ldots$
+
+\subsection{Linear Part of the Model}
+
+On average, the response is linear in the parameters:
+\[
+\beta_0 + \beta_1 x_{i1} + \cdots + \beta_p x_{ip}.
+\]
+
+This expression is linear in $\boldsymbol{\beta}$. However, the entries of the predictor vector $\mathbf{x}$ may include:
+\begin{itemize}
+    \item Continuous or discrete predictors.
+    \item Dummy variables for categorical predictors.
+    \item Polynomial terms such as $x^2$, $x^3$, etc.
+    \item Transformations such as $\log(x)$ or $\sin(x)$.
+    \item Interaction or cross-product terms such as $x_1 x_2$.
+\end{itemize}
+
+\subsection{Simple Linear Regression Model}
+
+Given observed data
+\[
+(x_1, Y_1), \dots, (x_n, Y_n),
+\]
+we propose the model
+\[
+Y_i = f(x_i) + \epsilon_i,
+\]
+where
+\[
+f(x_i) = \beta_0 + \beta_1 x_i
+\quad \text{and} \quad
+\E[\varepsilon_i] = 0, \qquad i = 1, \dots, n.
+\]
+
+\subsection{Model Components}
+
+\begin{itemize}
+    \item \textbf{Intercept parameter} $\beta_0$: deterministic and unknown
+    \item \textbf{Slope parameter} $\beta_1$: deterministic and unknown
+    \item \textbf{Error term} $\varepsilon_i$: random, zero-mean, and unknown
+\end{itemize}
+
+The intercept and slope are \emph{common across all observations}, while the errors vary between data points.
+
+\subsection{Interpretation Diagram (Conceptual)}
+
+\[
+Y_i = \beta_0 + \beta_1 x_i + \varepsilon_i
+\]
+
+\begin{itemize}
+    \item $Y_i$: response variable
+    \item $x_i$: explanatory variable
+    \item $\beta_0$: intercept
+    \item $\beta_1$: slope
+    \item $\varepsilon_i$: error
+\end{itemize}
+
+\subsection{Formal Properties of the Simple Linear Regression Model}
+
+The simple linear regression model is
+\[
+Y_i = \beta_0 + \beta_1 x_i + \varepsilon_i, \qquad i = 1, \dots, n.
+\]
+
+\begin{itemize}
+    \item The designation \textbf{simple} indicates there is only one predictor variable $x$.
+    \item The model is called \textbf{linear} because it is linear in the parameters $\beta_0$ and $\beta_1$.
+\end{itemize}
+
+\subsection{Expectation}
+
+Formally, given $X = x_i$, we have
+\[
+\begin{aligned}
+\E(Y_i)
+&= \E(\beta_0 + \beta_1 x_i + \varepsilon_i) \\
+&= \E(\beta_0 + \beta_1 x_i) + \E(\varepsilon_i) \\
+&= \beta_0 + \beta_1 x_i,
+\end{aligned}
+\]
+since $\E(\varepsilon_i) = 0$.
+
+Thus,
+\[
+\E(Y_i \mid X = x_i) = \beta_0 + \beta_1 x_i.
+\]
+
+\subsection{Linearity in Regression Models}
+
+Consider the following regression models.
+
+\subsubsection*{Examples of Nonlinear Models (in Parameters)}
+
+\[
+Y = \exp(\beta_0 + \beta_1 x) + \varepsilon
+\]
+
+This model is \textbf{not linear} in $\beta_0$ and $\beta_1$.
+
+\[
+Y = \beta_0 + \beta_1^2 x + \varepsilon
+\]
+
+This model is also \textbf{not linear} in $\beta_0$ and $\beta_1$ due to the squared parameter.
+
+\subsubsection*{Examples of Linear Models (in Parameters)}
+
+\[
+Y = \beta_0 \cdot 1 + \beta_1 x + \beta_2 \log(x) + \varepsilon
+\]
+
+This model is \textbf{linear} in the parameters $\beta_0$, $\beta_1$, and $\beta_2$.
+
+\[
+Y = \beta_0 + \beta_1 \log(x) + \varepsilon
+\]
+
+This is a \textbf{simple linear regression model}, since there is only one predictor $\log(x)$ and the model is linear in the parameters.
+
+\subsection{Sample Level vs.\ Population Level}
+
+\subsubsection*{Sample Level}
+
+The observed data
+\[
+(x_1, Y_1), (x_2, Y_2), \dots, (x_n, Y_n)
+\]
+are realizations of the random variable $(X, Y)$.
+
+\subsubsection*{Population Level}
+
+At the population level, the random variable $(X, Y)$ follows a joint distribution satisfying
+\[
+Y = \beta_0 + \beta_1 X + \varepsilon.
+\]
+
+\subsection{Modeling Assumption}
+
+In this course, we treat $X$ as given (known) and $Y$ as a random variable for simplicity.
+
+Under this treatment,
+\[
+\E(Y \mid X) = \E(Y),
+\qquad
+\Var(Y \mid X) = \Var(Y).
+\]
+
+The randomness of $Y_i$ arises from the error term $\varepsilon_i$, since
+\[
+Y_i = \beta_0 + \beta_1 x_i + \varepsilon_i.
+\]
+
+\subsection{Fitted Regression Model}
+
+For simple linear regression, the \textbf{fitted regression model} is
+\[
+\hat{Y} = \bhat{\beta}_0 + \bhat{\beta}_1 x,
+\]
+where $\bhat{\beta}_0$ and $\bhat{\beta}_1$ are estimates of the unknown parameters $\beta_0$ and $\beta_1$, respectively.
+
+\subsection{Interpretation}
+
+The fitted value $\hat{Y}$ estimates the conditional mean of the response:
+\[
+\hat{Y} \approx \E(Y \mid X).
+\]
+
+\subsection{Clarification}
+
+\[
+Y = \beta_0 + \beta_1 x + \varepsilon
+\qquad \text{(true model)}
+\]
+
+\[
+\E(Y \mid X) = \beta_0 + \beta_1 x
+\qquad \text{(population mean)}
+\]
+
+\[
+\hat{Y} = \bhat{\beta}_0 + \bhat{\beta}_1 x
+\qquad \text{(estimated mean)}
+\]
+
+\subsection{Interpretation of Regression Coefficients (Pearson's Data)}
+
+Consider the fitted regression model
+\[
+\widehat{\text{son}} = 33.89 + 0.51 \times \text{father},
+\]
+where
+\begin{itemize}
+    \item \textbf{son} = height of sons (in inches),
+    \item \textbf{father} = height of fathers (in inches).
+\end{itemize}
+
+\subsubsection*{Intercept}
+
+When $x = 0$, the expected value of the response is $33.89$.
+
+\textbf{Question:} Does it make sense to assume that a father's height is $0$ inches in this context?
+
+\textbf{Interpretation:}
+On average, a son's height is $33.89$ inches when the father's height is zero (not meaningful in practice).
+
+\subsubsection*{Slope}
+
+When $x$ increases by 1 unit, the expected value of the response increases by $0.51$ on average.
+
+\textbf{Contextual Meaning:}
+In Pearson's data, one unit corresponds to \textbf{one inch of height}.
+
+\textbf{Interpretation:}
+When a father's height increases by 1 inch, the son's height increases by $0.51$ inches on average.
+
+\subsection{Useful Algebraic Identities}
+
+We frequently use the following identities.
+
+\subsubsection*{Centered Cross-Product}
+
+\[
+\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y})
+=
+\sum_{i=1}^n x_i y_i - n \bar{x}\bar{y}.
+\]
+
+\subsubsection*{Centered Sum of Squares}
+
+\[
+\sum_{i=1}^n (x_i - \bar{x})^2
+=
+\sum_{i=1}^n x_i^2 - n \bar{x}^2,
+\]
+
+\[
+\sum_{i=1}^n (y_i - \bar{y})^2
+=
+\sum_{i=1}^n y_i^2 - n \bar{y}^2.
+\]
+
+\subsubsection*{Sample Means}
+
+\[
+\bar{x} = \frac{1}{n}\sum_{i=1}^n x_i
+\quad \Rightarrow \quad
+\sum_{i=1}^n x_i = n\bar{x},
+\]
+
+\[
+\bar{y} = \frac{1}{n}\sum_{i=1}^n y_i
+\quad \Rightarrow \quad
+\sum_{i=1}^n y_i = n\bar{y}.
+\]
+
+\subsection{Least Squares Estimation}
+
+Recall the simple linear regression model:
+\[
+Y_i = \beta_0 + \beta_1 x_i + \varepsilon_i.
+\]
+
+\begin{defn}{Method of Least Squares}{def:leastsquares}
+The \textbf{method of least squares} estimates $\beta_0$ and $\beta_1$ by minimizing the sum of squared residuals:
+\[
+\min_{\beta_0,\beta_1} L(\beta_0,\beta_1),
+\]
+where
+\[
+L(\beta_0,\beta_1) = \sum_{i=1}^n (y_i - \beta_0 - \beta_1 x_i)^2.
+\]
+\end{defn}
+
+Minimizing $L(\beta_0,\beta_1)$ means finding the values of $\beta_0$ and $\beta_1$ that make this function as small as possible.
+
+\subsection{Normal Equations}
+
+\subsubsection*{Step 1: Partial Derivatives}
+
+Take derivatives of $L(\beta_0,\beta_1)$ with respect to $\beta_0$ and $\beta_1$:
+
+\[
+\frac{\partial L}{\partial \beta_0}
+=
+-2\sum_{i=1}^n (y_i - \beta_0 - \beta_1 x_i),
+\]
+
+\[
+\frac{\partial L}{\partial \beta_1}
+=
+-2\sum_{i=1}^n x_i (y_i - \beta_0 - \beta_1 x_i).
+\]
+
+\subsubsection*{Step 2: Set Derivatives Equal to Zero}
+
+\[
+\sum_{i=1}^n (y_i - \beta_0 - \beta_1 x_i) = 0,
+\]
+
+\[
+\sum_{i=1}^n x_i (y_i - \beta_0 - \beta_1 x_i) = 0.
+\]
+
+\subsection{Solving for the Intercept}
+
+From
+\[
+\sum_{i=1}^n (y_i - \beta_0 - \beta_1 x_i) = 0,
+\]
+we obtain
+\[
+\sum_{i=1}^n y_i - n\beta_0 - \beta_1 \sum_{i=1}^n x_i = 0.
+\]
+
+Using $\sum y_i = n\bar{y}$ and $\sum x_i = n\bar{x}$:
+\[
+n\bar{y} - n\beta_0 - n\beta_1 \bar{x} = 0.
+\]
+
+Dividing by $n$:
+\[
+\beta_0 = \bar{y} - \beta_1 \bar{x}.
+\]
+
+Thus, the least squares estimator of the intercept is
+\[
+\bhat{\beta}_0 = \bar{y} - \bhat{\beta}_1 \bar{x}.
+\]
+
+If $\bhat{\beta}_1 = 0$, then $\bhat{\beta}_0 = \bar{y}$.
+
+\subsection{Solving for the Slope}
+
+Starting from
+\[
+\sum_{i=1}^n x_i (y_i - \beta_0 - \beta_1 x_i) = 0,
+\]
+substitute $\beta_0 = \bar{y} - \beta_1 \bar{x}$.
+
+After simplification, we obtain
+\[
+\bhat{\beta}_1
+=
+\frac{\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y})}
+     {\sum_{i=1}^n (x_i - \bar{x})^2}.
+\]
+
+\subsubsection*{Interpretation}
+
+\begin{itemize}
+    \item Numerator: sample covariance of $x$ and $y$
+    \item Denominator: sample variance of $x$
+\end{itemize}
+
+The solution depends entirely on the observed data.
+
+\begin{keyresult}[Least Squares Estimators for Simple Linear Regression]
+\[
+\bhat{\beta}_1
+=
+\frac{\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y})}
+     {\sum_{i=1}^n (x_i - \bar{x})^2},
+\]
+
+\[
+\bhat{\beta}_0
+=
+\bar{y} - \bhat{\beta}_1 \bar{x}.
+\]
+\end{keyresult}
+
+\subsection{Residuals and Residual Sum of Squares}
+
+\subsubsection*{Fitted Values}
+
+For each observation $i = 1, \dots, n$, the fitted (predicted) value is
+\[
+\hat{y}_i = \bhat{\beta}_0 + \bhat{\beta}_1 x_i.
+\]
+
+\subsubsection*{Residuals}
+
+The residual is defined as the difference between the observed and fitted values:
+\[
+\hat{e}_i = y_i - \hat{y}_i, \qquad i = 1, \dots, n.
+\]
+
+Residuals measure how far each observation lies from the fitted regression line.
+
+\subsubsection*{Residual Sum of Squares}
+
+\begin{keyresult}[Residual Sum of Squares]
+The \textbf{Residual Sum of Squares} is defined by
+\[
+\RSS
+=
+\sum_{i=1}^n \hat{e}_i^2
+=
+\sum_{i=1}^n (y_i - \hat{y}_i)^2.
+\]
+\end{keyresult}
+
+\begin{notebox}
+\textbf{Remarks about RSS:}
+\begin{itemize}
+    \item RSS is differentiable and has convenient mathematical properties.
+    \item Squaring penalizes large residuals more heavily than small ones.
+\end{itemize}
+\end{notebox}
+
+\subsubsection*{Residual Vector Representation}
+
+For observations $i = 1, \dots, n$:
+\[
+\hat{e}_1 = y_1 - \hat{y}_1,
+\quad
+\hat{e}_2 = y_2 - \hat{y}_2,
+\quad \dots \quad
+\hat{e}_n = y_n - \hat{y}_n.
+\]
+
+Thus,
+\[
+\RSS
+=
+\hat{e}_1^2 + \hat{e}_2^2 + \cdots + \hat{e}_n^2.
+\]
+
+\subsection{Properties of the Least Squares Fit}
+
+\subsubsection*{Residuals Sum to Zero}
+
+For the least squares estimators,
+\[
+\sum_{i=1}^n \hat{e}_i
+=
+\sum_{i=1}^n \bigl(y_i - (\bhat{\beta}_0 + \bhat{\beta}_1 x_i)\bigr)
+=
+0.
+\]
+
+\textbf{Proof:}
+
+\[
+\sum_{i=1}^n \hat{e}_i
+=
+\sum_{i=1}^n y_i
+-
+\sum_{i=1}^n \bhat{\beta}_0
+-
+\sum_{i=1}^n \bhat{\beta}_1 x_i.
+\]
+
+Using
+\[
+\sum_{i=1}^n y_i = n\bar{y},
+\quad
+\sum_{i=1}^n \bhat{\beta}_0 = n\bhat{\beta}_0,
+\quad
+\sum_{i=1}^n x_i = n\bar{x},
+\]
+we obtain
+\[
+n\bar{y} - n\bhat{\beta}_0 - n\bhat{\beta}_1 \bar{x}.
+\]
+
+Substituting $\bhat{\beta}_0 = \bar{y} - \bhat{\beta}_1 \bar{x}$:
+\[
+n\bar{y} - n(\bar{y} - \bhat{\beta}_1 \bar{x}) - n\bhat{\beta}_1 \bar{x} = 0.
+\]
+
+Hence,
+\[
+\sum_{i=1}^n \hat{e}_i = 0.
+\]
+
+\subsubsection*{Residuals Weighted by the Regressor}
+
+Another fundamental property is
+\[
+\sum_{i=1}^n x_i \hat{e}_i = 0.
+\]
+
+\textbf{Interpretation:}
+
+\begin{itemize}
+    \item Residuals are orthogonal to the regressor $x$.
+    \item This condition arises from the normal equations.
+    \item It ensures the slope estimator is optimal in the least squares sense.
+\end{itemize}
+
+\subsubsection*{Exercise}
+
+Show that
+\[
+\sum_{i=1}^n x_i \hat{e}_i = 0
+\]
+using the normal equations for $\bhat{\beta}_0$ and $\bhat{\beta}_1$.
+
+\subsubsection*{Solution}
+
+Recall that the residuals are
+\[
+\hat{e}_i = y_i - (\bhat{\beta}_0 + \bhat{\beta}_1 x_i).
+\]
+
+Then
+\[
+\sum_{i=1}^n x_i \hat{e}_i
+=
+\sum_{i=1}^n x_i \bigl(y_i - \bhat{\beta}_0 - \bhat{\beta}_1 x_i\bigr).
+\]
+
+Expanding the sum:
+\[
+\sum_{i=1}^n x_i y_i
+-
+\bhat{\beta}_0 \sum_{i=1}^n x_i
+-
+\bhat{\beta}_1 \sum_{i=1}^n x_i^2.
+\]
+
+From the normal equations for least squares:
+\[
+\sum_{i=1}^n x_i (y_i - \bhat{\beta}_0 - \bhat{\beta}_1 x_i) = 0.
+\]
+
+This expression is exactly the same as $\sum_{i=1}^n x_i \hat{e}_i$. Therefore,
+\[
+\sum_{i=1}^n x_i \hat{e}_i = 0.
+\]
+
+Hence, the residuals are orthogonal to the regressor variable $x$.
+
+\clearpage

@@ -1,0 +1,698 @@
+\section{Lecture 10: Variable Selection and Model Building}
+
+\subsection{Variable Selection and Model Building}
+
+In most practical problems, we deal with a large number of candidate predictors, but only a few are likely to be important for answering the objective question. Some of the important predictors may be correlated (multicollinearity), meaning we do not necessarily need all of them.
+
+\begin{defn}{Variable Selection}{variable_selection}
+Finding an appropriate subset of predictors for the model is referred to as the variable selection problem.
+\end{defn}
+
+\subsection{Conflicting Objectives in Model Building}
+
+Building a regression model that includes only a subset of the available predictors involves two conflicting objectives:
+
+\begin{itemize}
+\item Use as many predictors as possible to ensure accurate estimates and predictions.
+\item Use as few predictors as possible to maintain model simplicity while still ensuring accuracy.
+\end{itemize}
+
+The process of finding a model that is a compromise between these two objectives is called selecting the ``best'' regression equation. There is no unique definition of ``best,'' and different variable selection procedures often lead to different subsets of predictors being considered optimal.
+
+\subsection{Model Specification Outcomes}
+
+There are four possible outcomes when formulating a regression model:
+
+\begin{defn}{Correctly Specified Model}{correct_model}
+The regression equation includes all relevant predictors, along with any necessary transformations and interaction terms.
+\end{defn}
+
+\begin{defn}{Underspecified Model}{underspecified}
+The regression equation is missing one or more important predictor variables.
+\end{defn}
+
+\begin{defn}{Extraneous Variables}{extraneous}
+The regression equation includes variables that are not related to the response or to other predictors.
+\end{defn}
+
+\begin{defn}{Overspecified Model}{overspecified}
+The regression equation contains one or more redundant predictor variables.
+\end{defn}
+
+\subsubsection*{Case Study}
+
+We have a response variable $Y$ and three predictors $X_1, X_2, X_3$.
+
+\textbf{Correct model:}
+\[
+Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \varepsilon
+\]
+
+\textbf{Underspecified model:}
+\[
+Y = \beta_0 + \beta_1 X_1 + \varepsilon
+\]
+
+\textbf{Overspecified model (suppose $X_1$ and $X_2$ are correlated with $X_3$):}
+\[
+Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \beta_3 X_3 + \varepsilon
+\]
+
+\textbf{Extraneous variable (suppose $X_4$ is unrelated to $Y$ and the other predictors):}
+\[
+Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \alpha X_4 + \varepsilon
+\]
+
+\subsection{Correctly Specified Model}
+
+\begin{keyresult}[Properties of Correct Model]
+\begin{itemize}
+\item Produces \textbf{unbiased} and \textbf{consistent} estimates.
+\item Optimal predictive performance (low bias and variance).
+\item Reliable hypothesis tests and confidence intervals.
+\end{itemize}
+\end{keyresult}
+
+\subsection{Underspecified Model (Missing Important Predictors)}
+
+\begin{caution}
+\begin{itemize}
+\item Omitted variable bias (OVB) leads to biased estimates.
+\item Inflated standard errors and less efficient estimates.
+\item Misleading hypothesis tests and confidence intervals.
+\item Poor predictive performance.
+\end{itemize}
+\end{caution}
+
+\subsection{Model with Extraneous Variables (Irrelevant Predictors)}
+
+\begin{notebox}
+\begin{itemize}
+\item Increases variance of coefficient estimates.
+\item Reduces model interpretability.
+\item Adds computational complexity.
+\end{itemize}
+\end{notebox}
+
+\subsection{Overspecified Model (Redundant Predictors)}
+
+\begin{caution}
+\begin{itemize}
+\item Multicollinearity inflates standard errors.
+\item Unstable coefficient estimates.
+\item Overfitting and reduced model simplicity.
+\end{itemize}
+\end{caution}
+
+\subsection{Variable Selection in Linear Regression}
+
+Assume the full model is a multiple regression model with $m$ potential predictors:
+\[
+Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_m X_m + \varepsilon.
+\]
+
+We select subsets of predictors to build competing models.
+
+\subsection{Model Comparison Setup}
+
+Dataset: response $Y$ and predictors $X_1, X_2, \dots, X_m$.
+
+\begin{itemize}
+\item \textbf{Model 1:} uses $p$ predictors ($p < m$)
+\[
+Y = \beta_0 + \beta_1 X_1 + \cdots + \beta_p X_p + \varepsilon.
+\]
+
+\item \textbf{Model 2:} uses $q$ predictors ($q < m$, possibly $q \neq p$)
+\[
+Y = \beta_0 + \beta_1 X_1 + \cdots + \beta_q X_q + \varepsilon.
+\]
+\end{itemize}
+
+Note: $q$ can be greater than, less than, or equal to $p$.
+
+We need a \textbf{criterion} to compare models. Common choices are:
+
+\begin{itemize}
+\item $R^2$ (not preferred for selection; always increases with more variables)
+\item Adjusted $R^2$ (choose \textbf{largest})
+\item AIC (Akaike Information Criterion) (choose \textbf{smallest})
+\item BIC (Bayesian Information Criterion) (choose \textbf{smallest})
+\end{itemize}
+
+\subsection{Criterion 1: Adjusted $R^2$}
+
+\subsubsection*{Coefficient of Determination}
+
+\begin{keyresult}[R-squared]
+\[
+R^2 = \frac{\SSreg}{\SST} = 1 - \frac{\RSS}{\SST}.
+\]
+
+\begin{itemize}
+\item $R^2$ can be used to compare models with the \textbf{same number of predictors}.
+\item It is \textbf{not suitable} for choosing the number of predictors (it always increases when adding variables).
+\end{itemize}
+\end{keyresult}
+
+\subsubsection*{Adjusted $R^2$}
+
+\begin{keyresult}[Adjusted R-squared]
+\[
+R^2_{\text{adj}} = 1 - \frac{\RSS/(n - p - 1)}{\SST/(n - 1)},
+\]
+where $p$ is the number of predictors.
+
+\begin{itemize}
+\item $R^2_{\text{adj}}$ adjusts for model complexity.
+\item It can be used to compare models with \textbf{different numbers of predictors}.
+\item Choose the model with the \textbf{largest} $R^2_{\text{adj}}$.
+\end{itemize}
+\end{keyresult}
+
+\subsubsection*{Example}
+
+\begin{itemize}
+\item Model 1: $p = 10$, \quad $R^2_{\text{adj}} = 0.692$
+\item Model 2: $p = 9$, \quad $R^2_{\text{adj}} = 0.691$
+\item Model 3: $p = 8$, \quad $R^2_{\text{adj}} = 0.541$
+\end{itemize}
+
+Although Model 1 has the highest $R^2_{\text{adj}}$, the improvement over Model 2 is negligible:
+\[
+0.692 - 0.691 = 0.001 \approx 0.
+\]
+
+Thus, we prefer \textbf{Model 2}, since it is simpler and achieves nearly the same performance.
+
+\clearpage
+
+\subsection{Likelihood-Based Criteria}
+
+\subsubsection*{Likelihood}
+
+\begin{itemize}
+\item $\varepsilon_i \sim \mathcal{N}(0, \sigma^2)$
+\item $Y_i \sim \mathcal{N}(\mathbf{x}_i^\top \boldsymbol{\beta}, \sigma^2)$
+\end{itemize}
+
+Assuming independence, the joint density of $Y_1,\dots,Y_n$ is:
+\[
+L(\boldsymbol{\beta}, \sigma^2; \mathbf{Y})
+=
+\prod_{i=1}^n \frac{1}{\sqrt{2\pi\sigma^2}}
+\exp\left(
+-\frac{(y_i - \mathbf{x}_i^\top \boldsymbol{\beta})^2}{2\sigma^2}
+\right).
+\]
+
+This can be written as:
+\[
+L(\boldsymbol{\beta}, \sigma^2; \mathbf{Y})
+=
+(2\pi\sigma^2)^{-n/2}
+\exp\left(
+-\frac{1}{2\sigma^2}\sum_{i=1}^n (y_i - \mathbf{x}_i^\top \boldsymbol{\beta})^2
+\right).
+\]
+
+Define the residual sum of squares:
+\[
+\RSS = \sum_{i=1}^n (y_i - \mathbf{x}_i^\top \boldsymbol{\beta})^2.
+\]
+
+\subsubsection*{Log-Likelihood}
+
+Taking logarithms:
+\[
+\log L(\boldsymbol{\beta}, \sigma^2; \mathbf{Y})
+=
+-\frac{n}{2}\log(2\pi)
+-\frac{n}{2}\log(\sigma^2)
+-\frac{\RSS}{2\sigma^2}.
+\]
+
+\subsubsection*{MLE Estimators}
+
+\begin{keyresult}[Maximum Likelihood Estimators]
+\[
+\hat{\boldsymbol{\beta}} = (X^\top X)^{-1} X^\top Y,
+\qquad
+\hat{\sigma}^2_{\text{MLE}} = \frac{\RSS}{n}.
+\]
+\end{keyresult}
+
+\subsubsection*{Log-Likelihood at the MLE}
+
+\[
+\log L(\hat{\boldsymbol{\beta}}, \hat{\sigma}^2; \mathbf{Y})
+=
+-\frac{n}{2}\log(2\pi)
+-\frac{n}{2}\log\left(\frac{\RSS}{n}\right)
+-\frac{n}{2}.
+\]
+
+\subsubsection*{Least Squares vs Maximum Likelihood}
+
+\begin{notebox}
+\begin{itemize}
+\item $\hat{\boldsymbol{\beta}}$ is identical for LS and MLE.
+\item Variance estimate differs:
+\[
+\hat{\sigma}^2_{\text{LS}} = \frac{\RSS}{n - p - 1},
+\qquad
+\hat{\sigma}^2_{\text{MLE}} = \frac{\RSS}{n}.
+\]
+\end{itemize}
+\end{notebox}
+
+\subsection{Criterion 2: AIC}
+
+\subsubsection*{Definition: Akaike Information Criterion (AIC)}
+
+\begin{keyresult}[AIC Formula]
+\[
+\mathrm{AIC}
+=
+2\left[-\log L(\hat{\boldsymbol{\beta}}, \hat{\sigma}^2; \mathbf{Y}) + (p+2)\right].
+\]
+
+Equivalently,
+\[
+\mathrm{AIC}
+=
+n \log\left(\frac{\RSS}{n}\right) + 2p + \text{constant}.
+\]
+
+\begin{itemize}
+\item $p+2$ counts parameters: $\beta_0, \dots, \beta_p$, and $\sigma^2$.
+\item Choose the model with the \textbf{smallest AIC}.
+\end{itemize}
+\end{keyresult}
+
+\subsection{Criterion 3: $\mathrm{AIC}_c$}
+
+\subsubsection*{Definition}
+
+\begin{keyresult}[$\mathrm{AIC}_c$ (Corrected AIC)]
+\[
+\mathrm{AIC}_c
+=
+\mathrm{AIC}
++
+\frac{2(p+2)(p+3)}{n - p - 1}.
+\]
+
+\begin{itemize}
+\item Bias-corrected version of AIC.
+\item Recommended when sample size is small.
+\item Use $\mathrm{AIC}_c$ when $n \le 40(p+2)$.
+\end{itemize}
+\end{keyresult}
+
+\subsection{Criterion 4: BIC}
+
+Bayesian Information Criterion (BIC) is derived from a large-sample approximation to the Bayesian model evidence (marginal likelihood):
+\[
+p(\mathbf{Y} \mid \mathcal{M}) = \int L(\boldsymbol{\beta}, \sigma^2; \mathbf{Y}) \, \pi(\boldsymbol{\beta}, \sigma^2)\, d\boldsymbol{\beta}\, d\sigma^2.
+\]
+
+Using Laplace's approximation, this leads to:
+\[
+\log p(\mathbf{Y} \mid \mathcal{M})
+\approx
+\log L(\hat{\boldsymbol{\beta}}, \hat{\sigma}^2)
+- \frac{k}{2}\log(n),
+\]
+where $k = p + 2$ is the number of estimated parameters.
+
+Multiplying by $-2$, we obtain:
+
+\begin{keyresult}[BIC Formula]
+\[
+\mathrm{BIC}
+=
+-2 \log L(\hat{\boldsymbol{\beta}}, \hat{\sigma}^2)
++ (p+2)\log(n).
+\]
+
+Ignoring constants:
+\[
+\mathrm{BIC}
+=
+n \log\left(\frac{\RSS}{n}\right)
++ p \log(n) + \text{constant}.
+\]
+\end{keyresult}
+
+\subsection{Automated Variable Selection Methods}
+
+\subsection{Best Subset Selection}
+
+Fit all possible models formed by subsets of predictors.
+
+\begin{itemize}
+\item For $m$ predictors, there are $2^m$ possible models.
+\item Each model is evaluated using a criterion (e.g., $R^2_{\text{adj}}$, AIC, BIC).
+\item Select the model that optimizes the chosen criterion.
+\item Computationally expensive for large $m$.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{pictures/3.png}
+    \caption{Best subset selection process}
+\end{figure}
+
+\subsection{Forward Selection}
+
+Add regressors from a candidate set $\{x_1, \dots, x_m\}$, one at a time, until a certain stopping condition is met.
+
+\begin{itemize}
+\item Start without any predictor in the model (only the intercept):
+\[
+Y = \beta_0 + \varepsilon
+\]
+
+\item Add one predictor at a time. Each time add the predictor that leads to the lowest value of an information criterion (e.g., AIC, BIC).
+
+\item Stop when all variables have been added or when the information criterion increases.
+\end{itemize}
+
+This is a greedy algorithm, and does not necessarily lead to the global optimal model.
+
+\subsubsection*{Example}
+
+Using the AIC values below, identify the model selected by forward selection. Show all steps.
+
+\[
+\begin{array}{c|c}
+\text{Model} & \text{AIC} \\
+\hline
+Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \varepsilon & 86.5814 \\
+Y = \beta_0 + \beta_2 X_2 + \varepsilon & 78.4214 \\
+Y = \beta_0 + \beta_1 X_1 + \varepsilon & 81.7216 \\
+Y = \beta_0 + \varepsilon & 92.5462
+\end{array}
+\]
+
+\textbf{Solution:}
+
+Step 1: Start with the null model
+\[
+Y = \beta_0 + \varepsilon, \quad \text{AIC} = 92.5462
+\]
+
+Step 2: Add one predictor at a time
+\[
+Y = \beta_0 + \beta_1 X_1 + \varepsilon, \quad \text{AIC} = 81.7216
+\]
+\[
+Y = \beta_0 + \beta_2 X_2 + \varepsilon, \quad \text{AIC} = 78.4214
+\]
+
+Select the model with lowest AIC:
+\[
+Y = \beta_0 + \beta_2 X_2 + \varepsilon
+\]
+
+Step 3: Try adding another predictor
+\[
+Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \varepsilon, \quad \text{AIC} = 86.5814
+\]
+
+The AIC increases, so we stop. Thus the final model is:
+\[
+Y = \beta_0 + \beta_2 X_2 + \varepsilon, \quad \text{AIC} = 78.4214
+\]
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{pictures/4.png}
+    \caption{Forward selection process}
+\end{figure}
+
+\subsection{Backward Elimination}
+
+Eliminate predictors one at a time.
+
+\subsubsection*{Steps}
+
+\begin{itemize}
+\item Start with the full model.
+
+\item Delete one predictor at a time. Each time, delete the predictor that leads to the lowest value of an information criterion (e.g., BIC).
+
+\item Stop when all variables have been deleted or when the information criterion increases.
+\end{itemize}
+
+This is a greedy algorithm, and does not necessarily lead to the global optimal model.
+
+\subsubsection*{Example}
+
+Using the BIC values below, identify the model selected by backward elimination. Show all steps.
+
+\[
+\begin{array}{c|c}
+\text{Model} & \text{BIC} \\
+\hline
+Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \varepsilon & 44.1289 \\
+Y = \beta_0 + \beta_2 X_2 + \varepsilon & 46.3420 \\
+Y = \beta_0 + \beta_1 X_1 + \varepsilon & 39.5682 \\
+Y = \beta_0 + \varepsilon & 50.7267
+\end{array}
+\]
+
+\textbf{Solution:}
+
+Step 1: Start with the full model
+\[
+Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \varepsilon, \quad \text{BIC} = 44.1289
+\]
+
+Step 2: Delete one predictor at a time
+\[
+Y = \beta_0 + \beta_2 X_2 + \varepsilon, \quad \text{BIC} = 46.3420
+\]
+\[
+Y = \beta_0 + \beta_1 X_1 + \varepsilon, \quad \text{BIC} = 39.5682
+\]
+
+Select the model with lowest BIC:
+\[
+Y = \beta_0 + \beta_1 X_1 + \varepsilon
+\]
+
+Step 3: Try deleting another predictor
+\[
+Y = \beta_0 + \varepsilon, \quad \text{BIC} = 50.7267
+\]
+
+The BIC increases, so we stop. Thus the final model is:
+\[
+Y = \beta_0 + \beta_1 X_1 + \varepsilon, \quad \text{BIC} = 39.5682
+\]
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{pictures/5.png}
+    \caption{Backward elimination process}
+\end{figure}
+
+\subsection{Stepwise Regression}
+
+A combination of forward selection and backward elimination.
+
+\begin{itemize}
+\item Start with no predictors (check from the null model), or equivalently start from the full model.
+\item Add predictors one at a time.
+\item After adding a predictor, check if any previously added predictors should be removed.
+\item Repeat until no predictor can be added or removed.
+\end{itemize}
+
+This is a greedy algorithm and does not necessarily lead to the global optimal model.
+
+\subsubsection*{Example}
+
+Using the AIC values below, identify the model selected by stepwise regression. Show all steps clearly, including both forward selections and backward eliminations where appropriate.
+
+\[
+\begin{array}{c|c}
+\text{Model} & \text{AIC} \\
+\hline
+Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \varepsilon & 86.5814 \\
+Y = \beta_0 + \beta_2 X_2 + \varepsilon & 78.4214 \\
+Y = \beta_0 + \beta_1 X_1 + \varepsilon & 81.7216 \\
+Y = \beta_0 + \varepsilon & 92.5462
+\end{array}
+\]
+
+\textbf{Solution:}
+
+Step 1: Start with null model
+\[
+Y = \beta_0 + \varepsilon, \quad \text{AIC} = 92.5462
+\]
+
+Step 2: Forward step (add one predictor)
+\[
+Y = \beta_0 + \beta_1 X_1 + \varepsilon, \quad \text{AIC} = 81.7216
+\]
+\[
+Y = \beta_0 + \beta_2 X_2 + \varepsilon, \quad \text{AIC} = 78.4214
+\]
+
+Select the model with lowest AIC:
+\[
+Y = \beta_0 + \beta_2 X_2 + \varepsilon
+\]
+
+Step 3: Try adding another predictor
+\[
+Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \varepsilon, \quad \text{AIC} = 86.5814
+\]
+
+AIC increases, so we do not add $X_1$.
+
+Step 4: Backward check
+
+Check if removing $X_2$ improves the model:
+\[
+Y = \beta_0 + \varepsilon, \quad \text{AIC} = 92.5462
+\]
+
+AIC increases, so we keep $X_2$. Thus the final model is:
+\[
+Y = \beta_0 + \beta_2 X_2 + \varepsilon, \quad \text{AIC} = 78.4214
+\]
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{pictures/6.png}
+    \caption{Stepwise regression process}
+\end{figure}
+
+\subsection{Stepwise Regression: Comments}
+
+\begin{notebox}
+\begin{itemize}
+\item Backward elimination is often an effective variable selection procedure, especially when analysts want to start with all candidate predictors and assess their impact.
+
+\item The three procedures (forward, backward, stepwise) do not necessarily lead to the same final model.
+
+\item None of these procedures guarantees finding the best subset regression model.
+\end{itemize}
+\end{notebox}
+
+\subsection{The \texttt{step()} Function}
+
+\begin{notebox}
+\begin{itemize}
+\item The \texttt{step()} function from the \texttt{stats} package performs forward selection, backward elimination, or stepwise regression, using AIC as the criterion.
+
+\item It can be applied directly to \texttt{lm} objects.
+
+\item The function \texttt{extractAIC()} can be used to compute the AIC of a fitted model.
+\end{itemize}
+\end{notebox}
+
+\begin{verbatim}
+# Load the dataset
+data(mtcars)
+
+# Full model
+full_model <- lm(mpg ~ ., data = mtcars)
+
+# Stepwise regression (both directions)
+stepwise_model <- step(full_model, direction = "both")
+
+# Summary of final model
+summary(stepwise_model)
+\end{verbatim}
+
+\begin{notebox}
+\begin{itemize}
+\item The algorithm starts from the full model and iteratively removes or adds predictors to minimize AIC.
+
+\item At each step, the model with the lowest AIC among candidates is selected.
+
+\item The final model reported by \texttt{summary(stepwise\_model)} is the model with the smallest AIC found during the search.
+
+\item The selected model balances goodness-of-fit (low $\RSS$) and model complexity (number of predictors).
+
+\item Note: The result is not guaranteed to be the global optimal model.
+\end{itemize}
+\end{notebox}
+
+\subsection{Penalized Regression for Variable Selection}
+
+\subsection{LASSO (Least Absolute Shrinkage and Selection Operator)}
+
+\begin{notebox}
+\begin{itemize}
+\item LASSO performs variable selection and regression coefficient estimation simultaneously.
+
+\item It produces \textbf{shrinkage estimates}, reducing the magnitude of coefficients.
+
+\item Some coefficients are forced exactly to zero, effectively selecting variables.
+
+\item Another common shrinkage method is Ridge regression.
+\end{itemize}
+\end{notebox}
+
+\subsection{OLS vs LASSO vs Ridge}
+
+\begin{keyresult}[Comparison of Regression Methods]
+\begin{itemize}
+\item \textbf{Ordinary Least Squares (OLS):}
+\[
+\sum_{i=1}^{n} \left(y_i - \hat{\beta}_0 - \hat{\beta}_1 x_{i1} - \cdots - \hat{\beta}_p x_{ip} \right)^2
+\]
+
+\item \textbf{LASSO:}
+\[
+\sum_{i=1}^{n} \left(y_i - \hat{\beta}_0 - \hat{\beta}_1 x_{i1} - \cdots - \hat{\beta}_p x_{ip} \right)^2
+\quad \text{subject to} \quad
+\sum_{j=1}^{p} |\hat{\beta}_j| \le t
+\]
+
+\item \textbf{Ridge Regression:}
+\[
+\sum_{i=1}^{n} \left(y_i - \hat{\beta}_0 - \hat{\beta}_1 x_{i1} - \cdots - \hat{\beta}_p x_{ip} \right)^2
+\quad \text{subject to} \quad
+\sum_{j=1}^{p} \hat{\beta}_j^2 \le t
+\]
+
+Note: No constraint is applied to the intercept $\hat{\beta}_0$.
+\end{itemize}
+\end{keyresult}
+
+\subsection{Key Differences}
+
+\begin{notebox}
+\begin{itemize}
+\item In LASSO, the constraint can force $\hat{\beta}_j = 0$ for some $j$ when $\lambda$ is tuned appropriately.
+
+\item In Ridge regression, coefficients are shrunk toward zero but never exactly zero.
+
+\item LASSO performs \textbf{variable selection}, while Ridge does not.
+
+\item Elastic Net combines both LASSO ($L_1$) and Ridge ($L_2$) penalties.
+\end{itemize}
+\end{notebox}
+
+\subsection{Geometric Interpretation of Ridge vs LASSO}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{pictures/7.png}
+\caption{Geometric interpretation of Ridge vs LASSO}
+\end{figure}
+
+The contours represent the OLS loss function, with the center at $\hat{\bbeta}_{LS}$. The shaded regions correspond to constraint sets: a circle for Ridge ($L_2$ constraint) and a diamond for LASSO ($L_1$ constraint). The estimated coefficients are given by the first point where the contour intersects the constraint boundary.
+
+For Ridge, the smooth circular boundary makes it unlikely that the intersection occurs exactly on an axis, so coefficients are shrunk but typically remain nonzero.
+
+For LASSO, the diamond-shaped constraint has sharp corners aligned with the axes. The intersection often occurs at these corners, where one coordinate is exactly zero. This geometric property explains why LASSO can produce sparse solutions by setting some coefficients exactly equal to zero.
+
+\clearpage

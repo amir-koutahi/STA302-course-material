@@ -1,0 +1,452 @@
+\section{Lecture 9: Outliers, Leverage Points, and Influential Observations}
+
+\subsection{Outliers}
+
+\begin{defn}{Outlier}{outlier}
+A data point that the model fails to explain. It is a data point that is, in some way, very far from the rest of the data. An outlier typically has a large residual, often identified using standardized residuals.
+\end{defn}
+
+\subsection{Leverage Points}
+
+\begin{defn}{Leverage Point}{leverage}
+A data point whose $x$ value is far away from $\bar{x}$.
+\end{defn}
+
+\begin{defn}{Good Leverage Point}{good_leverage}
+A leverage point that is not an outlier.
+\end{defn}
+
+\begin{defn}{Bad Leverage Point}{bad_leverage}
+A leverage point that is also an outlier.
+\end{defn}
+
+\subsection{Influential Points}
+
+\begin{defn}{Influential Point}{influential}
+A data point that significantly affects the fitted model. The regression estimates change considerably when it is included or removed.
+\end{defn}
+
+A data point can be influential, an outlier, or both. Influential points are not necessarily outliers, and outliers are not necessarily influential.
+
+\begin{notebox}
+\textbf{Method to identify an influential point in simple linear regression (SLR):} Visualize the regression line with and without the data point. If the slope changes considerably, then the data point is influential. Identifying influential points in multiple linear regression (MLR) is more complex.
+\end{notebox}
+
+\bigskip
+
+\begin{figure}[H]
+    \centering
+    \begin{tabular}{ccc}
+        \includegraphics[width=0.3\textwidth]{pictures/fig1.png} &
+        \includegraphics[width=0.3\textwidth]{pictures/fig2.png} &
+        \includegraphics[width=0.3\textwidth]{pictures/fig3.png} \\
+        \includegraphics[width=0.3\textwidth]{pictures/fig4.png} &
+        \includegraphics[width=0.3\textwidth]{pictures/fig5.png} &
+        \includegraphics[width=0.3\textwidth]{pictures/fig6.png}
+    \end{tabular}
+    \caption{Comparison of outliers, influential points, and leverage points}
+\end{figure}
+
+\subsection{Review of the Hat Matrix}
+
+Model:
+\[
+Y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots + \beta_p x_{ip} + \varepsilon_i,
+\quad i = 1,2,\dots,n.
+\]
+
+Hat matrix:
+\[
+H = X (X^\top X)^{-1} X^\top
+\]
+
+where
+\[
+X =
+\begin{pmatrix}
+1 & x_{11} & x_{12} & \cdots & x_{1p} \\
+1 & x_{21} & x_{22} & \cdots & x_{2p} \\
+\vdots & \vdots & \vdots & \ddots & \vdots \\
+1 & x_{n1} & x_{n2} & \cdots & x_{np}
+\end{pmatrix}.
+\]
+
+\subsection{Leverage: $h_{ii}$}
+
+The fitted values are
+\[
+\hat{\bY} = X \hat{\bbeta} = H \bY.
+\]
+
+In component form,
+\[
+\hat{Y}_i = \sum_{j=1}^n h_{ij} Y_j.
+\]
+
+Equivalently,
+\[
+\hat{Y}_i = h_{ii} Y_i + \sum_{j \ne i} h_{ij} Y_j,
+\quad i = 1,2,\dots,n.
+\]
+
+\subsection{Leverage $h_{ii}$ in Simple Linear Regression}
+
+For simple linear regression,
+\[
+h_{ij} = \frac{1}{n} + \frac{(x_i - \bar{x})(x_j - \bar{x})}{\sum_{k=1}^{n} (x_k - \bar{x})^2}
+\]
+
+In particular,
+\[
+h_{ii} = \frac{1}{n} + \frac{(x_i - \bar{x})^2}{\sum_{k=1}^{n} (x_k - \bar{x})^2}
+\]
+
+\begin{keyresult}[Properties of Leverage in SLR]
+The leverage $h_{ii}$ attains its minimum when $x_i = \bar{x}$:
+\[
+x_i = \bar{x} \;\Rightarrow\; (x_i - \bar{x}) = 0 \;\Rightarrow\; h_{ii} = \frac{1}{n}
+\]
+The further $x_i$ is from $\bar{x}$, the higher its leverage.
+\end{keyresult}
+
+\subsection{Hat Matrix Representation}
+
+\[
+\hat{\bY} = H\bY
+\]
+
+\[
+\hat{Y}_i = \sum_{j=1}^{n} h_{ij} Y_j
+\]
+
+Explicitly,
+\[
+\hat{Y}_1 = h_{11}Y_1 + h_{12}Y_2 + \cdots + h_{1n}Y_n
+\]
+\[
+\hat{Y}_2 = h_{21}Y_1 + h_{22}Y_2 + \cdots + h_{2n}Y_n
+\]
+\[
+\vdots
+\]
+\[
+\hat{Y}_n = h_{n1}Y_1 + h_{n2}Y_2 + \cdots + h_{nn}Y_n
+\]
+
+\subsection{Properties of the Elements $h_{ij}$}
+
+\begin{prop}{Sum Properties}
+We have $HX = X (X^\top X)^{-1} X^\top X = X$, which implies:
+$$
+\sum_{j=1}^{n} h_{ij} = 1 \quad \text{for any } i, \quad
+\sum_{i=1}^{n} h_{ij} = 1 \quad \text{for any } j
+$$
+\end{prop}
+
+\begin{prop}{Idempotence and Symmetry}
+The hat matrix is idempotent: $H^2 = H$. Moreover, it is symmetric: $h_{ij} = h_{ji}$.
+\[
+H \cdot H =
+\begin{pmatrix}
+h_{11} & h_{12} & \cdots & h_{1n} \\
+h_{21} & h_{22} & \cdots & h_{2n} \\
+\vdots & \vdots & \ddots & \vdots \\
+h_{n1} & h_{n2} & \cdots & h_{nn}
+\end{pmatrix}
+\begin{pmatrix}
+h_{11} & h_{12} & \cdots & h_{1n} \\
+h_{21} & h_{22} & \cdots & h_{2n} \\
+\vdots & \vdots & \ddots & \vdots \\
+h_{n1} & h_{n2} & \cdots & h_{nn}
+\end{pmatrix}
+=
+\begin{pmatrix}
+h_{11} & h_{12} & \cdots & h_{1n} \\
+h_{21} & h_{22} & \cdots & h_{2n} \\
+\vdots & \vdots & \ddots & \vdots \\
+h_{n1} & h_{n2} & \cdots & h_{nn}
+\end{pmatrix}
+\]
+\end{prop}
+
+\begin{prop}{Diagonal Element Formula}
+We have $h_{ii} = \sum_{j=1}^{n} h_{ij}^2$.
+
+For example:
+\[
+h_{11}h_{11} + h_{12}h_{21} + \cdots + h_{1n}h_{n1} = h_{11}
+\]
+
+Since $H$ is symmetric ($h_{ij} = h_{ji}$):
+\[
+h_{11}^2 + h_{12}^2 + \cdots + h_{1n}^2 = h_{11}
+\]
+\end{prop}
+
+\begin{prop}{Bounds on Leverage}
+The diagonal elements satisfy $0 \le h_{ii} \le 1$.
+
+Why $h_{ii} \ge 0$? Since $h_{ii} = \sum_{j=1}^{n} h_{ij}^2$, each term is squared and thus nonnegative.
+
+Why $h_{ii} \le 1$? We have
+\[
+h_{ii} = \sum_{j=1}^{n} h_{ij}^2 = h_{ii}^2 + \sum_{j \ne i} h_{ij}^2
+\]
+
+Thus,
+\[
+h_{ii} - h_{ii}^2 = \sum_{j \ne i} h_{ij}^2 \ge 0
+\]
+
+This gives $h_{ii}(1 - h_{ii}) \ge 0$, and therefore $h_{ii} \le 1$.
+\end{prop}
+
+\begin{prop}{Trace of Hat Matrix}
+We have $\sum_{i=1}^{n} h_{ii} = \Tr(H) = p + 1$.
+
+This follows because
+\begin{align*}
+\Tr(H)
+&= \Tr\!\left( X (X^\top X)^{-1} X^\top \right) \\
+&= \Tr\!\left( (X^\top X)^{-1} X^\top X \right) \\
+&= \Tr(I_{p+1}) \\
+&= p+1
+\end{align*}
+\end{prop}
+
+\begin{keyresult}[Average Leverage]
+The average leverage is:
+\[
+\bar{h} = \frac{1}{n} \sum_{i=1}^{n} h_{ii} = \frac{p+1}{n}
+\]
+\end{keyresult}
+
+\subsection{Criteria for Leverage Points Detection}
+
+\begin{keyresult}[Leverage Detection Thresholds]
+A data point is considered a leverage point if:
+\[
+h_{ii} > \frac{2(p+1)}{n} = 2\bar{h}
+\]
+This is the criterion generally used in this course.
+
+Alternatively, some use:
+\[
+h_{ii} > \frac{3(p+1)}{n} = 3\bar{h}
+\quad \text{for } p > 6 \text{ and } n - p > 12
+\]
+
+Or simply:
+\[
+h_{ii} > 0.5
+\]
+\end{keyresult}
+
+\subsection{Outliers and Residuals}
+
+To detect outliers, we begin with the (raw) residual:
+\[
+\hat{\beps} = \bY - \hat{\bY} = (I - H)\bY.
+\]
+
+This leads to:
+\[
+\hat{e}_i = (1 - h_{ii})Y_i - \sum_{j \ne i} h_{ij} Y_j.
+\]
+
+\begin{caution}
+Points with high leverage tend to have small residuals. A raw residual is not a proper measure for outlier detection. High values of $h_{ii}$ imply that $(1 - h_{ii})$ is small, which results in small residuals $\hat{e}_i$.
+\end{caution}
+
+\subsection{Distribution of Residuals}
+
+\[
+\E[\hat{\beps}] = 0,
+\qquad
+\Var(\hat{\beps}) = \sigma^2 (I - H).
+\]
+
+The $i^{\text{th}}$ least squares residual has variance:
+\[
+\Var(\hat{e}_i) = \sigma^2 (1 - h_{ii}).
+\]
+
+Thus, the $i^{\text{th}}$ standardized residual is:
+\[
+r_i = \frac{\hat{e}_i}{\hat{\sigma}\sqrt{1 - h_{ii}}}.
+\]
+
+Standardized residuals can be used to detect outliers.
+
+\subsection{Criteria for Outlier Detection}
+
+\begin{keyresult}[Outlier Detection Rules]
+Data points $(x_i, y_i)$ are labeled as outliers if:
+\begin{itemize}
+\item $|r_i| > 2$ for small datasets $(n < 50)$,
+\item $|r_i| > 4$ for large datasets $(n \ge 50)$.
+\end{itemize}
+\end{keyresult}
+
+\subsection{Identifying Influential Points}
+
+\begin{defn}{Influential Observation}{influential_obs}
+An observation whose removal from the data set would cause a large change in the estimated regression coefficients.
+\end{defn}
+
+Suppose we suspect that observation $i$ is influential. To test the effect of its deletion, refit the model without the $i^{\text{th}}$ observation.
+
+\begin{notebox}
+\textbf{Notation:}
+\begin{itemize}
+\item $\hat{\beta}_{j(i)}$: The $j^{\text{th}}$ fitted regression coefficient without observation $i$.
+\item $\hat{y}_{j(i)}$: The $j^{\text{th}}$ fitted value without observation $i$.
+\item $\hat{\sigma}_{(i)}$: The residual standard error without observation $i$.
+\end{itemize}
+
+Various measures of influence examine quantities like
+\[
+(\hat{\beta}_j - \hat{\beta}_{j(i)}) \quad \text{or} \quad (\hat{y}_j - \hat{y}_{j(i)}).
+\]
+\end{notebox}
+
+\subsection{Cook's Distance}
+
+\begin{defn}{Cook's Distance}{cooks}
+Cook's distance quantifies the influence of an observation on all fitted values:
+\[
+D_i = \frac{\sum_{j=1}^{n} \left( \hat{y}_j - \hat{y}_{j(i)} \right)^2}{\hat{\sigma}^2 (p+1)},
+\quad i = 1,2,\dots,n.
+\]
+\end{defn}
+
+Equivalently,
+\[
+D_i = \frac{r_i^2}{p+1} \cdot \frac{h_{ii}}{1 - h_{ii}}.
+\]
+
+The term $\dfrac{h_{ii}}{1 - h_{ii}}$ is called the \textbf{potential}.
+
+\begin{keyresult}[Interpretation of Cook's Distance]
+Influential points have a high $D_i$ compared to the other points. An influential point is a compromise between a leverage point (high $h_{ii}$) and an outlier (high $r_i$).
+\end{keyresult}
+
+\subsection{Detecting Influential Points Using Cook's Distance}
+
+It is also equivalent to write
+\[
+D_i =
+\frac{(\hat{\bbeta} - \hat{\bbeta}^{(i)})^{\top}
+(X^{\top}X)
+(\hat{\bbeta} - \hat{\bbeta}^{(i)})}
+{\hat{\sigma}^2 (p+1)}.
+\]
+
+This measures the influence of the $i^{\text{th}}$ case on the regression coefficients.
+
+\begin{keyresult}[Cook's Distance Thresholds]
+\begin{itemize}
+\item \textbf{Rule of thumb (Cook, 1977):} A data point is considered influential if its Cook's distance $D_i$ exceeds the $50^{\text{th}}$ percentile of the $F$ distribution with $p+1$ and $n-p-1$ degrees of freedom:
+\[
+F_{0.5,\, p+1,\, n-p-1}.
+\]
+
+\item Some authors use the approximation $F_{0.5,\, p+1,\, n-p-1} \approx 1$ for large $n$, and thus consider a data point influential if $D_i > 1$.
+
+\item Often the cutoff values $1$ or $\dfrac{4}{n}$ are suggested.
+\end{itemize}
+\end{keyresult}
+
+\subsection{DFFITS and DFBETAS}
+
+Two other measures of influence (besides Cook's distance) are
+
+\[
+\text{DFFITS}_i = \frac{\hat{y}_i - \hat{y}_{i(i)}}{\hat{\sigma}_{(i)} \sqrt{h_{ii}}}
+\]
+
+\[
+\text{DFBETAS}_{j,i} =
+\frac{\hat{\beta}_j - \hat{\beta}_{j(i)}}
+{\hat{\sigma}_{(i)} \sqrt{(X^{\top}X)^{-1}_{j+1,j+1}}},
+\quad j = 0,1,\dots,p.
+\]
+
+\begin{notebox}
+\textbf{Interpretation:}
+\begin{itemize}
+\item $\text{DFFITS}_i$ (``difference in fitted values'') measures how much the $i^{\text{th}}$ observation influences the fitted value $\hat{y}_i$.
+
+\item $\text{DFBETAS}_{j,i}$ (``difference in betas'') measures how much the $i^{\text{th}}$ observation influences the coefficient $\hat{\beta}_j$.
+\end{itemize}
+\end{notebox}
+
+\subsection{Detecting Influential Points Using DFFITS and DFBETAS}
+
+\begin{keyresult}[DFFITS and DFBETAS Thresholds]
+\textbf{Rule of thumb:} The $i^{\text{th}}$ observation should be examined if
+\[
+|\text{DFFITS}_i| > 2\sqrt{\frac{p+1}{n}}
+\quad \text{or} \quad
+|\text{DFBETAS}_{j,i}| > \frac{2}{\sqrt{n}}
+\quad \text{for some } j.
+\]
+\end{keyresult}
+
+\subsection{General Guidance on Influence Measures}
+
+To determine whether a case is influential, it can be useful to compare the fitted regression model with and without the $i^{\text{th}}$ case and examine the impact on parameter estimates or predictions.
+
+\begin{notebox}
+\begin{itemize}
+\item Identifying influential observations is subjective; it is neither automatic nor foolproof.
+
+\item Cook's distance, DFFITS, and DFBETAS are based on the idea of assessing the impact of removing a single observation, similar to leave-one-out cross-validation (LOOCV).
+
+\item Cross-validation is discussed in more detail in later material.
+\end{itemize}
+\end{notebox}
+
+\subsection{Comparison of Influence Measures}
+
+\begin{notebox}
+\begin{itemize}
+\item \textbf{Cook's distance:} Overall influence on all fitted values (and regression coefficients).
+
+\item \textbf{DFFITS:} Influence on individual fitted values.
+
+\item \textbf{DFBETAS:} Influence on individual regression coefficients.
+\end{itemize}
+\end{notebox}
+
+\subsection{Treatment of Influential Observations}
+
+There are essentially three approaches when dealing with influential observations:
+
+\begin{itemize}
+\item Consider removing them if justified.
+
+\item Modify the model (e.g., transform variables or add interaction terms).
+
+\item Use alternative estimation methods (e.g., robust regression or weighted least squares).
+\end{itemize}
+
+\subsection{Useful R Functions for Influence Diagnostics}
+
+\begin{notebox}
+\begin{itemize}
+\item \texttt{rstudent()} — Studentized residuals ($r_i$, used to detect outliers)
+
+\item \texttt{hatvalues()} — Leverage values ($h_{ii}$, used to detect leverage points)
+
+\item \texttt{cooks.distance()} — Cook's distance ($D_i$, used to detect influential points)
+
+\item \texttt{dffits()} — DFFITS measure
+
+\item \texttt{dfbetas()} — DFBETAS measure
+
+\item \texttt{influence.measures()} — Computes all of the above and more
+\end{itemize}
+\end{notebox}
+
+\clearpage

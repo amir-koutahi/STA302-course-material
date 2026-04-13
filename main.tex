@@ -1,0 +1,241 @@
+\documentclass[11pt,a4paper]{article}
+
+% ============================================================
+% GEOMETRY & LAYOUT
+% ============================================================
+\usepackage[margin=1in]{geometry}
+\setlength{\headheight}{14pt}
+\setlength{\parskip}{0.5em}
+\setlength{\parindent}{0pt}
+
+% ============================================================
+% FONTS & ENCODING
+% ============================================================
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+
+% ============================================================
+% MATH
+% ============================================================
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{mathtools}
+\usepackage{bm}
+
+% ============================================================
+% TABLES, FIGURES, LISTS
+% ============================================================
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage{array}
+\usepackage{tabularx}
+
+% ============================================================
+% COLORS & BOXES
+% ============================================================
+\usepackage[dvipsnames]{xcolor}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins,breakable,theorems}
+
+% Color palette
+\definecolor{defblue}{RGB}{0,80,160}
+\definecolor{thmgreen}{RGB}{0,110,60}
+\definecolor{exorange}{RGB}{200,100,0}
+\definecolor{warnred}{RGB}{180,30,30}
+\definecolor{notegray}{RGB}{80,80,80}
+\definecolor{lightbg}{RGB}{248,248,252}
+\definecolor{keybg}{RGB}{255,250,230}
+
+% ============================================================
+% THEOREM ENVIRONMENTS
+% ============================================================
+\newtcbtheorem[number within=section]{defn}{Definition}{
+    colback=defblue!5, colframe=defblue!70!black,
+    fonttitle=\bfseries, arc=2pt, boxrule=0.6pt,
+    left=6pt, right=6pt, top=4pt, bottom=4pt,
+    breakable, separator sign none
+}{def}
+
+\newtcbtheorem[number within=section]{thm}{Theorem}{
+    colback=thmgreen!5, colframe=thmgreen!70!black,
+    fonttitle=\bfseries, arc=2pt, boxrule=0.6pt,
+    left=6pt, right=6pt, top=4pt, bottom=4pt,
+    breakable, separator sign none
+}{thm}
+
+\newtcbtheorem[number within=section]{prop}{Proposition}{
+    colback=thmgreen!5, colframe=thmgreen!60!black,
+    fonttitle=\bfseries, arc=2pt, boxrule=0.6pt,
+    left=6pt, right=6pt, top=4pt, bottom=4pt,
+    breakable, separator sign none
+}{prop}
+
+% Key result box (unnumbered)
+\newtcolorbox{keyresult}[1][]{
+    colback=keybg, colframe=exorange!80!black,
+    fonttitle=\bfseries, title={#1},
+    arc=2pt, boxrule=0.8pt,
+    left=6pt, right=6pt, top=4pt, bottom=4pt,
+    breakable
+}
+
+% Warning/caution box
+\newtcolorbox{caution}[1][Caution]{
+    colback=warnred!5, colframe=warnred!70!black,
+    fonttitle=\bfseries, title={#1},
+    arc=2pt, boxrule=0.6pt,
+    left=6pt, right=6pt, top=4pt, bottom=4pt,
+    breakable
+}
+
+% Note box
+\newtcolorbox{notebox}[1][Note]{
+    colback=gray!5, colframe=gray!60!black,
+    fonttitle=\bfseries, title={#1},
+    arc=2pt, boxrule=0.5pt,
+    left=6pt, right=6pt, top=4pt, bottom=4pt,
+    breakable
+}
+
+% ============================================================
+% CODE LISTINGS
+% ============================================================
+\usepackage{listings}
+\lstdefinestyle{rstyle}{
+    language=R,
+    backgroundcolor=\color{lightbg},
+    frame=single,
+    rulecolor=\color{gray!40},
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{defblue}\bfseries,
+    commentstyle=\color{thmgreen!70!black}\itshape,
+    stringstyle=\color{warnred!80!black},
+    breaklines=true,
+    showstringspaces=false,
+    tabsize=2,
+    xleftmargin=0.5em,
+    framexleftmargin=0.3em,
+    numbers=none,
+    morekeywords={lm,summary,anova,confint,predict,coef,residuals,
+        fitted,hatvalues,cooks.distance,step,extractAIC,vcov,
+        rstudent,dffits,dfbetas,influence.measures,poly,
+        data.frame,set.seed,sample,mean,sqrt,qt,pf,qf},
+}
+\lstset{style=rstyle}
+
+% ============================================================
+% HEADER & FOOTER
+% ============================================================
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textbf{STA302} --- Methods of Data Analysis I}
+\fancyhead[R]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\fancyfoot[C]{\small\textit{Amir Koutahi}}
+
+% ============================================================
+% SECTION FORMATTING
+% ============================================================
+\usepackage{titlesec}
+\titleformat{\section}
+    {\Large\bfseries\color{defblue}}
+    {\thesection}{1em}{}[\titlerule]
+\titleformat{\subsection}
+    {\large\bfseries\color{defblue!80!black}}
+    {\thesubsection}{0.8em}{}
+\titleformat{\subsubsection}
+    {\normalsize\bfseries}
+    {\thesubsubsection}{0.6em}{}
+
+% ============================================================
+% HYPERLINKS & PDF METADATA
+% ============================================================
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=defblue!70!black,
+    urlcolor=defblue!70!black,
+    citecolor=thmgreen!70!black,
+    pdftitle={STA302H1 -- Methods of Data Analysis I -- Study Notes},
+    pdfauthor={Amir Koutahi},
+}
+
+% ============================================================
+% CUSTOM COMMANDS
+% ============================================================
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\Tr}{\operatorname{Tr}}
+\newcommand{\RSS}{\mathrm{RSS}}
+\newcommand{\SST}{\mathrm{SST}}
+\newcommand{\SSreg}{\mathrm{SS}_{\mathrm{reg}}}
+\newcommand{\se}{\mathrm{se}}
+\newcommand{\bx}{\mathbf{x}}
+\newcommand{\bX}{\mathbf{X}}
+\newcommand{\bY}{\mathbf{Y}}
+\newcommand{\bbeta}{\boldsymbol{\beta}}
+\newcommand{\beps}{\boldsymbol{\varepsilon}}
+\newcommand{\bhat}[1]{\widehat{\boldsymbol{#1}}}
+
+% ============================================================
+% DOCUMENT
+% ============================================================
+\begin{document}
+
+% ---- Title Page ----
+\begin{titlepage}
+\centering
+\vspace*{2cm}
+
+{\Huge\bfseries\color{defblue} STA302H1}\\[0.5cm]
+{\LARGE Methods of Data Analysis I}\\[1.5cm]
+
+\begin{tcolorbox}[
+    colback=defblue!5,
+    colframe=defblue!60!black,
+    width=0.7\textwidth,
+    arc=4pt,
+    boxrule=1pt,
+    halign=center
+]
+{\Large\bfseries Study Notes}\\[0.3cm]
+{\normalsize Comprehensive lecture notes covering simple and multiple\\
+linear regression, diagnostics, inference, model selection,\\
+penalized regression, and cross-validation.}
+\end{tcolorbox}
+
+\vspace{2cm}
+
+{\Large Amir Koutahi}\\[0.5cm]
+{\large University of Toronto}\\[0.3cm]
+{\large Winter 2025}
+
+\vfill
+{\small Last updated: \today}
+\end{titlepage}
+
+% ---- Table of Contents ----
+\newpage
+\tableofcontents
+\newpage
+
+% ---- Lecture Files ----
+\include{lec1}
+\include{lec2}
+\include{lec3}
+\include{lec4}
+\include{lec5}
+\include{lec6}
+\include{lec7}
+\include{lec8}
+\include{lec9}
+\include{lec10}
+\include{lec11}
+\include{lec12}
+
+\end{document}

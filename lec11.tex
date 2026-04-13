@@ -1,0 +1,344 @@
+\section{Lecture 11: Model Validation, Cross-Validation, and Extensions}
+
+\subsection{Generalization Performance}
+
+\begin{itemize}
+\item After fitting a regression model, we evaluate how well it predicts \textbf{new (unseen) data}.
+
+\item The \textbf{generalization error} measures performance on data not used for model fitting:
+\[
+\sum_{i} (y_i - \hat{y}_i)^2 \quad \text{on new/test data.}
+\]
+
+\item Variable selection reduces \textbf{overfitting} by keeping only relevant predictors.
+
+\item Alternatively, we control complexity using \textbf{penalization}.
+\end{itemize}
+
+\subsection{Penalization Idea}
+
+\begin{keyresult}[Penalization Framework]
+\[
+\text{Objective} = \text{Loss Function} + \text{Penalty}
+\]
+
+\begin{itemize}
+\item For regression, the loss is typically the least squares:
+\[
+\sum_{i=1}^{n} (y_i - \mathbf{x}_i^\top \boldsymbol{\beta})^2
+\]
+
+\item The penalty discourages large or complex models.
+
+\item Penalization improves generalization and reduces overfitting.
+\end{itemize}
+\end{keyresult}
+
+\subsection{Penalized Regression: Formulation}
+
+\begin{keyresult}[LASSO and Ridge Regression]
+\begin{itemize}
+\item \textbf{LASSO regression:}
+\[
+\|Y - X\boldsymbol{\beta}\|^2 + \lambda \|\boldsymbol{\beta}\|_1
+= \sum_{i=1}^{n} (y_i - \mathbf{x}_i^\top \boldsymbol{\beta})^2 + \lambda \sum_{j=1}^{p} |\beta_j|
+\]
+
+\item \textbf{Ridge regression:}
+\[
+\|Y - X\boldsymbol{\beta}\|^2 + \lambda \|\boldsymbol{\beta}\|_2^2
+= \sum_{i=1}^{n} (y_i - \mathbf{x}_i^\top \boldsymbol{\beta})^2 + \lambda \sum_{j=1}^{p} \beta_j^2
+\]
+
+\item The tuning parameter $\lambda$ controls model complexity. Larger $\lambda$ means more shrinkage.
+\end{itemize}
+\end{keyresult}
+
+\subsection{Key Insight}
+
+\begin{notebox}
+\begin{itemize}
+\item \textbf{LASSO:} sets some $\beta_j = 0$, which means it performs variable selection.
+
+\item \textbf{Ridge:} shrinks coefficients toward zero but does not make them exactly zero.
+
+\item Different values of $\lambda$ produce different models.
+\end{itemize}
+\end{notebox}
+
+\subsection{Model Validation}
+
+\begin{defn}{Model Validation}{validation}
+To assess predictive performance, we evaluate the model on a \textbf{new (unseen) dataset}. A new dataset is one not used in model training. In practice, we split the data into:
+\begin{itemize}
+\item \textbf{Training set}: used to fit the model
+\item \textbf{Test (validation) set}: used to evaluate performance
+\end{itemize}
+The test set acts as a proxy for future unseen data.
+\end{defn}
+
+\subsection{Example Setup}
+
+\begin{itemize}
+\item Data: $(x_{i1}, x_{i2}, x_{i3}, x_{i4}, y_i)$ for $i = 1, \dots, 100$.
+
+\item Model:
+\[
+Y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \beta_3 x_{i3} + \beta_4 x_{i4} + \varepsilon_i
+\]
+
+\item Randomly select 80 indices as training set $T$.
+
+\item Define validation set:
+\[
+V = \{1,2,\dots,100\} \setminus T
+\]
+
+\item Training set:
+\[
+\{(x_{i1}, x_{i2}, x_{i3}, x_{i4}, y_i) \mid i \in T\}
+\]
+
+\item Test set:
+\[
+\{(x_{i1}, x_{i2}, x_{i3}, x_{i4}, y_i) \mid i \in V\}
+\]
+\end{itemize}
+
+\subsection{Fitting the Model}
+
+\[
+\hat{\boldsymbol{\beta}}
+= \arg\min_{\boldsymbol{\beta}}
+\sum_{i \in T}
+\left(y_i - \beta_0 - \beta_1 x_{i1} - \beta_2 x_{i2} - \beta_3 x_{i3} - \beta_4 x_{i4}\right)^2
+\]
+
+\subsection{Evaluation: Mean Squared Error (MSE)}
+
+\begin{keyresult}[Test MSE]
+\[
+\text{MSE}
+= \frac{1}{|V|}
+\sum_{i \in V}
+\left(y_i - \hat{\beta}_0 - \hat{\beta}_1 x_{i1} - \hat{\beta}_2 x_{i2} - \hat{\beta}_3 x_{i3} - \hat{\beta}_4 x_{i4}\right)^2
+\]
+
+\begin{itemize}
+\item $|V|$ = number of observations in the test set.
+
+\item MSE measures prediction error on unseen data.
+
+\item Lower MSE $\Rightarrow$ better generalization.
+\end{itemize}
+\end{keyresult}
+
+\subsection{Model Selection via Validation}
+
+\begin{itemize}
+\item \textbf{Model selection}: Use validation to compare different models and choose the one with the best generalization performance.
+
+\item Validation can also be used to select the optimal tuning parameter $\lambda$ in penalized regression from a candidate set.
+
+\item Validation results can be sensitive to how the data is split, especially in the presence of outliers, which may introduce selection bias.
+\end{itemize}
+
+\subsection{Cross-Validation}
+
+\begin{defn}{Cross-Validation}{cv}
+Cross-validation is a method to estimate prediction error more reliably. The general idea is: 1) Split the data into multiple subsets (folds). 2) Perform validation on each split. 3) Average the performance across all splits. Common methods are LOOCV and $K$-Fold Cross-Validation.
+\end{defn}
+
+\subsection{Key Uses of Cross-Validation}
+
+\begin{notebox}
+\begin{itemize}
+\item \textbf{Model assessment}: Compare predictive performance of different models.
+
+\item \textbf{Model selection}: Choose relevant variables and appropriate model complexity (e.g., degree of polynomial, penalization strength).
+
+\item Cross-validation is widely used in \textbf{penalized regression} to tune $\lambda$.
+\end{itemize}
+\end{notebox}
+
+\subsection{LOOCV (Leave-One-Out Cross-Validation)}
+
+\begin{defn}{LOOCV}{loocv}
+For each $i = 1, \dots, n$:
+\begin{itemize}
+\item Train the model on
+\[
+z_{-i} = \{z_1, \dots, z_n\} \setminus \{z_i\}
+\]
+(all data except the $i$-th observation).
+
+\item Predict the left-out response: $\hat{y}_i^{(-i)}$
+
+\item Compute squared error: $e_i = (y_i - \hat{y}_i^{(-i)})^2$
+\end{itemize}
+
+Average generalization error:
+\[
+\mathrm{CV}_{(n)} = \frac{1}{n} \sum_{i=1}^n e_i
+\]
+
+Here, $\hat{y}_i^{(-i)}$ is the prediction using a model trained without $(x_i, y_i)$.
+\end{defn}
+
+\begin{notebox}
+If $k = n$: LOOCV is equivalent to $K$-fold cross-validation.
+\end{notebox}
+
+\subsection{LOOCV for LASSO}
+
+For each candidate tuning parameter $\lambda_m$ in $\Lambda = \{\lambda_1, \dots, \lambda_M\}$:
+
+\begin{keyresult}[LOOCV Algorithm for LASSO]
+For $i = 1, \dots, n$:
+\[
+\hat{\boldsymbol{\beta}}^{(-i,m)}
+= \arg\min_{\boldsymbol{\beta}}
+\sum_{j \ne i}
+\left(y_j - \beta_0 - \beta_1 x_{j1} - \cdots - \beta_p x_{jp}\right)^2
++ \lambda_m \|\boldsymbol{\beta}\|_1
+\]
+
+Compute validation error:
+\[
+e_i(m) = \left(y_i - \hat{\beta}_0^{(-i,m)} - \hat{\beta}_1^{(-i,m)} x_{i1} - \cdots - \hat{\beta}_p^{(-i,m)} x_{ip}\right)^2
+\]
+
+Average cross-validation error:
+\[
+\mathrm{CV}(m) = \frac{1}{n} \sum_{i=1}^n e_i(m)
+\]
+
+Select optimal parameter:
+\[
+m^* = \arg\min_{m=1,\dots,M} \mathrm{CV}(m), \quad \lambda^* = \lambda_{m^*}
+\]
+\end{keyresult}
+
+\subsection{Takeaway}
+
+\begin{caution}
+When fitting a regression model (or any machine learning model), we care not only about how well the model fits the training data, but also about its \textbf{generalization performance}. Penalized regression helps prevent \textbf{overfitting}. Cross-validation is used to tune the parameter $\lambda$, which controls the trade-off between \textbf{model fit} and \textbf{model complexity}.
+\end{caution}
+
+\subsection{Extension of Models}
+
+\subsection{Scalar-on-Vector Regression}
+
+\begin{defn}{Scalar-on-Vector Regression}{scalar_vector}
+\[
+Y_i = \beta_0 + \sum_{j=1}^{p} \beta_j x_{ij} + \epsilon_i, \quad \mathbf{Y} = \mathbf{X}\beta + \epsilon
+\]
+
+\begin{itemize}
+\item $Y_i \in \mathbb{R}$, $x_i \in \mathbb{R}^p$
+\item Standard multiple linear regression
+\end{itemize}
+\end{defn}
+
+\subsection{Multivariate (Vector-on-Vector) Regression}
+
+\begin{defn}{Vector-on-Vector Regression}{vector_vector}
+\[
+[\mathbf{Y}^{(1)},\dots,\mathbf{Y}^{(q)}] = \mathbf{X}[\beta^{(1)},\dots,\beta^{(q)}] + [\epsilon^{(1)},\dots,\epsilon^{(q)}], \quad \mathbf{Y}=\mathbf{X}\beta+\epsilon
+\]
+
+\begin{itemize}
+\item $\mathbf{Y}_i \in \mathbb{R}^q$
+\item Multiple correlated responses, separate $\beta^{(k)}$
+\item Example: asset returns (Tech, Finance, Energy) $\leftarrow$ macro predictors
+\end{itemize}
+\end{defn}
+
+\subsection{Scalar-on-Matrix Regression}
+
+\begin{defn}{Scalar-on-Matrix Regression}{scalar_matrix}
+\[
+Y_i = \sum_{j,k} X^{(i)}_{j,k}\beta_{j,k} + \epsilon_i = \Tr(X^{(i)}\beta) + \epsilon_i
+\]
+
+\begin{itemize}
+\item $X^{(i)} \in \mathbb{R}^{m \times n}$, $\beta \in \mathbb{R}^{m \times n}$
+\item Elementwise inner product via trace
+\item Example: MRI image $\rightarrow$ scalar outcome
+\end{itemize}
+\end{defn}
+
+\subsection{Scalar-on-Tensor Regression}
+
+\begin{defn}{Scalar-on-Tensor Regression}{scalar_tensor}
+\[
+Y_i = \sum_{j,k,\ell} X^{(i)}_{j,k,\ell}\beta_{j,k,\ell} + \epsilon_i = \langle X^{(i)}, \beta \rangle + \epsilon_i
+\]
+
+\begin{itemize}
+\item $X^{(i)}$ is a tensor (multi-dimensional array)
+\item $\langle \cdot,\cdot \rangle$ = elementwise inner product
+\item Example: video (time $\times$ height $\times$ width) $\rightarrow$ scalar
+\end{itemize}
+\end{defn}
+
+\subsection{Complexity Control (Matrix/Tensor)}
+
+\begin{notebox}
+\begin{itemize}
+\item Parameters grow rapidly, leading to overfitting risk.
+\item Impose structure on $\beta$ (e.g., low-rank):
+\[
+\beta \approx UV^\top \quad (\text{matrix case})
+\]
+
+\item Fewer parameters, better generalization.
+\end{itemize}
+\end{notebox}
+
+\subsection{Autoregressive (AR) Models}
+
+\begin{defn}{Autoregressive Models}{ar_models}
+Used in \textbf{time series analysis} (e.g., stock market, financial data). Data: $x_1, x_2, \dots, x_T$.
+\end{defn}
+
+\subsubsection*{AR(1) Model}
+
+\begin{keyresult}[First-Order Autoregressive Model]
+\[
+x_t = \phi x_{t-1} + \epsilon_t, \quad t=2,\dots,T
+\]
+
+where $\phi$ is the coefficient (dependence on previous value) and $\epsilon_t$ is the error (noise).
+\end{keyresult}
+
+\subsubsection*{AR(p) Model}
+
+\begin{keyresult}[p-th Order Autoregressive Model]
+Uses $p$ previous time steps (lags):
+\[
+x_t = \phi_1 x_{t-1} + \phi_2 x_{t-2} + \cdots + \phi_p x_{t-p} + \epsilon_t, \quad t=p+1,\dots,T
+\]
+\end{keyresult}
+
+\subsubsection*{Key Properties}
+
+\begin{notebox}
+\begin{itemize}
+\item Regression-like: predictors = past values of the same series
+\item Both response and predictors are $x$'s
+\item \textbf{Order matters} (temporal dependence)
+\item Equivalent to linear regression with lagged variables
+\end{itemize}
+\end{notebox}
+
+\clearpage
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{pictures/summary.png}
+    \caption{Summary of key concepts}
+    \label{fig:summary}
+\end{figure}
+
+\clearpage

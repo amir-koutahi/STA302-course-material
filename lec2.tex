@@ -1,0 +1,543 @@
+\section{Lecture 2: Matrix Formulation and Multiple Regression}
+
+\subsection{Matrix Form of Simple Linear Regression}
+
+The simple linear regression model is
+\[
+Y_i = \beta_0 + \beta_1 x_i + \varepsilon_i,
+\qquad \varepsilon_i \sim \mathcal{N}(0,\sigma^2),
+\quad i = 1,\dots,n.
+\]
+
+In vector form,
+\[
+\mathbf{Y}
+=
+\begin{pmatrix}
+Y_1\\
+\vdots\\
+Y_n
+\end{pmatrix}
+=
+\begin{pmatrix}
+1 & x_1\\
+\vdots & \vdots\\
+1 & x_n
+\end{pmatrix}
+\begin{pmatrix}
+\beta_0\\
+\beta_1
+\end{pmatrix}
++
+\begin{pmatrix}
+\varepsilon_1\\
+\vdots\\
+\varepsilon_n
+\end{pmatrix}.
+\]
+
+Define
+\[
+\mathbf{X}
+=
+\begin{pmatrix}
+1 & x_1\\
+\vdots & \vdots\\
+1 & x_n
+\end{pmatrix},
+\quad
+\bbeta
+=
+\begin{pmatrix}
+\beta_0\\
+\beta_1
+\end{pmatrix},
+\quad
+\beps
+=
+\begin{pmatrix}
+\varepsilon_1\\
+\vdots\\
+\varepsilon_n
+\end{pmatrix}.
+\]
+
+The model can be written as
+\[
+\mathbf{Y} = \mathbf{X}\bbeta + \beps,
+\qquad
+\beps \sim \mathcal{N}(\mathbf{0}_n, \sigma^2 \mathbf{I}_n).
+\]
+
+\subsection{Multiple Linear Regression Model}
+
+\textbf{Model:}
+\[
+Y_i = \beta_0 + \beta_1 x_{i1} + \cdots + \beta_p x_{ip} + \varepsilon_i,
+\qquad i = 1, 2, \ldots, n
+\]
+
+\textbf{Parameters:}
+\[
+\beta_0, \beta_1, \ldots, \beta_p
+\]
+
+\textbf{Estimates of the parameters:}
+\[
+\bhat{\beta}_0, \bhat{\beta}_1, \ldots, \bhat{\beta}_p
+\]
+
+\textbf{Fitted values:}
+\[
+\hat{Y}_i = \bhat{\beta}_0 + \bhat{\beta}_1 x_{i1} + \cdots + \bhat{\beta}_p x_{ip}
+\]
+
+Equivalently,
+\[
+Y_i = \beta_0 + \beta_1 x_{i1} + \cdots + \beta_p x_{ip} + \varepsilon_i
+= \mathbf{x}_i^\top \bbeta + \varepsilon_i.
+\]
+
+Here,
+\[
+\bbeta = (\beta_0,\beta_1,\dots,\beta_p)^\top,
+\qquad
+\varepsilon_i \sim \mathcal{N}(0,\sigma^2) \text{ i.i.d.}
+\]
+
+The response variable $Y$ is a univariate random variable. The predictor vector is
+\[
+\mathbf{x} = (1, x_1, \dots, x_p)^\top,
+\]
+which is fixed and has dimension $p+1$.
+
+\subsection{Model Properties}
+
+\begin{enumerate}
+    \item $\E(Y_i \mid X = \mathbf{x}_i) = \beta_0 + \beta_1 x_{i1} + \cdots + \beta_p x_{ip}$ (equivalent to $\E(\varepsilon_i) = 0$).
+
+    \item On average, the response is linear in $\beta_0,\beta_1,\dots,\beta_p$ (linear in the parameters, not necessarily linear in the predictors).
+
+    \item $\Var(Y_i \mid X = x_i) = \Var(Y_i \mid X_1 = x_{i1}, \ldots, X_p = x_{ip}) = \sigma^2$. This assumption means that the variability of the response around its conditional mean is constant for all values of the predictors (homoscedasticity).
+\end{enumerate}
+
+\subsection{Matrix Form of the Multiple Linear Regression Model}
+
+The multiple linear regression model can be written as
+\[
+\mathbf{Y} = \mathbf{X}\bbeta + \beps,
+\]
+where
+\[
+\mathbf{X}
+=
+\begin{pmatrix}
+1 & x_{11} & \cdots & x_{1p} \\
+\vdots & \vdots & & \vdots \\
+1 & x_{n1} & \cdots & x_{np}
+\end{pmatrix},
+\qquad
+\bbeta
+=
+\begin{pmatrix}
+\beta_0 \\
+\vdots \\
+\beta_p
+\end{pmatrix},
+\qquad
+\beps
+\sim N(\mathbf{0}_n, \sigma^2 \mathbf{I}_n).
+\]
+
+\subsection{Least Squares Estimator}
+
+The parameters are estimated by the least squares estimator $\bhat{\beta}$ obtained by minimizing the residual sum of squares.
+
+The fitted regression is
+\[
+\widehat{\E}(Y_i \mid X = \mathbf{x}_i)
+= \hat{Y}_i
+= \bhat{\beta}_0 + \bhat{\beta}_1 x_{i1} + \cdots + \bhat{\beta}_p x_{ip}
+= \mathbf{x}_i^\top \bhat{\beta}.
+\]
+
+Combining all fitted values,
+\[
+\widehat{\E}(\mathbf{Y} \mid \mathbf{X})
+= \hat{\mathbf{Y}}
+= \mathbf{X}\bhat{\beta}
+=
+\begin{pmatrix}
+\mathbf{x}_1^\top \bhat{\beta} \\
+\vdots \\
+\mathbf{x}_n^\top \bhat{\beta}
+\end{pmatrix}.
+\]
+
+The least squares estimate $\bhat{\beta}$ of $\beta$ minimizes the residual sum of squares:
+\[
+\RSS(\beta)
+= \sum_{i=1}^n \bigl(Y_i - \mathbf{x}_i^{\top}\beta\bigr)^2
+= (\mathbf{Y} - \mathbf{X}\beta)^{\top}(\mathbf{Y} - \mathbf{X}\beta),
+\]
+where $Y_i$ is the observed value and $\mathbf{x}_i^{\top}\beta$ is the regression line value.
+
+\subsection{Least Squares Procedure for Finding Estimators}
+
+\begin{enumerate}
+    \item Differentiate $\RSS(\beta)$ with respect to $\beta$ and set the derivative equal to $0$.
+    \item Rearrange to solve for $\bhat{\beta}$.
+    \item The minimizer is unique if $\mathbf{X}^{\top}\mathbf{X}$ is invertible.
+\end{enumerate}
+
+\subsection{Derivation of the Least Squares Estimator}
+
+We expand the residual sum of squares:
+\[
+\begin{aligned}
+\RSS(\beta)
+&= (\bY - \mathbf{X}\beta)^{\top}(\bY - \mathbf{X}\beta) \\
+&= (\bY^{\top} - \beta^{\top} \mathbf{X}^{\top})(\bY - \mathbf{X}\beta) \\
+&= \bY^{\top}\bY - \bY^{\top}\mathbf{X}\beta - \beta^{\top}\mathbf{X}^{\top}\bY + \beta^{\top}\mathbf{X}^{\top}\mathbf{X}\beta.
+\end{aligned}
+\]
+
+Since $\bY^{\top}\mathbf{X}\beta$ is a scalar,
+\[
+\bY^{\top}\mathbf{X}\beta = (\bY^{\top}\mathbf{X}\beta)^{\top} = \beta^{\top}\mathbf{X}^{\top}\bY,
+\]
+so
+\[
+\RSS(\beta)
+= \bY^{\top}\bY - 2\beta^{\top}\mathbf{X}^{\top}\bY + \beta^{\top}\mathbf{X}^{\top}\mathbf{X}\beta.
+\]
+
+Differentiate with respect to $\beta$ (the first term is constant, the second is linear, the third is a quadratic form):
+\[
+\frac{\partial \RSS(\beta)}{\partial \beta}
+= -2\mathbf{X}^{\top}\bY + 2\mathbf{X}^{\top}\mathbf{X}\beta.
+\]
+
+Setting the derivative equal to zero:
+\[
+-2\mathbf{X}^{\top}\bY + 2\mathbf{X}^{\top}\mathbf{X}\beta = 0,
+\]
+which simplifies to
+\[
+\mathbf{X}^{\top}\mathbf{X}\beta = \mathbf{X}^{\top}\bY.
+\]
+
+Assuming $\mathbf{X}^{\top}\mathbf{X}$ is invertible:
+\[
+\bhat{\beta} = (\mathbf{X}^{\top}\mathbf{X})^{-1}\mathbf{X}^{\top}\bY.
+\]
+
+The fitted values are therefore
+\[
+\hat{\bY} = \mathbf{X}\bhat{\beta} = \mathbf{X}(\mathbf{X}^{\top}\mathbf{X})^{-1}\mathbf{X}^{\top}\bY.
+\]
+
+\subsection{Mathematical Background}
+
+Let $\mathbf{A}$ and $\mathbf{B}$ be matrices of sizes $m \times n$ and $n \times m$:
+\[
+(\mathbf{A}\mathbf{B})^{\top} = \mathbf{B}^{\top}\mathbf{A}^{\top}.
+\]
+
+For vectors $\mathbf{x}, \mathbf{y} \in \mathbb{R}^n$:
+\[
+\mathbf{x}^{\top}\mathbf{y} = \sum_{i=1}^n x_i y_i.
+\]
+
+\textbf{Linear function:} Let
+\[
+F(\beta) = \mathbf{a}^{\top}\beta = \sum_{j=0}^p a_j \beta_j,
+\quad
+\mathbf{a} = (a_0, a_1, \dots, a_p)^{\top}.
+\]
+Then
+\[
+\frac{\partial F(\beta)}{\partial \beta}
+=
+\begin{pmatrix}
+\frac{\partial F}{\partial \beta_0} \\
+\vdots \\
+\frac{\partial F}{\partial \beta_p}
+\end{pmatrix}
+= \mathbf{a}.
+\]
+
+\textbf{Quadratic forms:} Consider
+\[
+Q(\beta) = \beta^{\top}\mathbf{Q}\beta,
+\]
+where $\mathbf{Q}$ is a $(p+1)\times(p+1)$ matrix. Then
+\[
+\frac{\partial Q(\beta)}{\partial \beta}
+= (\mathbf{Q} + \mathbf{Q}^{\top})\beta.
+\]
+
+If $\mathbf{Q}$ is symmetric:
+\[
+\frac{\partial Q(\beta)}{\partial \beta} = 2\mathbf{Q}\beta.
+\]
+
+\begin{caution}
+What assumptions did we make on the data for least squares estimation? Answer: $(\mathbf{X}^\top \mathbf{X})^{-1}$ must be invertible.
+\end{caution}
+
+\subsection{Example: Computing Parameter Estimates}
+
+Given the data with sample size $n$ (to be determined from context):
+
+\[
+\sum y_i = 90,\quad
+\sum x_{i,1} = 52,\quad
+\sum x_{i,2} = 102,\quad
+\sum x_{i,1}x_{i,2} = 536
+\]
+
+\[
+\sum x_{i,1}^2 = 296,\quad
+\sum x_{i,2}^2 = 1004,\quad
+\sum x_{i,1}y_i = 482,\quad
+\sum x_{i,2}y_i = 872
+\]
+
+Calculate the $\mathbf{X}^{\top}\mathbf{X}$ matrix:
+\[
+\mathbf{X}^\top \mathbf{X}
+=
+\begin{pmatrix}
+n & \sum x_{i,1} & \sum x_{i,2} \\
+\sum x_{i,1} & \sum x_{i,1}^2 & \sum x_{i,1}x_{i,2} \\
+\sum x_{i,2} & \sum x_{i,2}x_{i,1} & \sum x_{i,2}^2
+\end{pmatrix}
+=
+\begin{pmatrix}
+n & 52 & 102 \\
+52 & 296 & 536 \\
+102 & 536 & 1004
+\end{pmatrix}
+\]
+
+And the $\mathbf{X}^{\top}\mathbf{Y}$ vector:
+\[
+\mathbf{X}^\top \mathbf{Y}
+=
+\begin{pmatrix}
+\sum y_i \\
+\sum x_{i,1}y_i \\
+\sum x_{i,2}y_i
+\end{pmatrix}
+=
+\begin{pmatrix}
+90 \\
+482 \\
+872
+\end{pmatrix}
+\]
+
+Then:
+\[
+\bhat{\beta}
+=
+(\mathbf{X}^\top \mathbf{X})^{-1} \mathbf{X}^\top \mathbf{Y}
+=
+\begin{pmatrix}
+0.9747634 & 0.2429022 & -0.2287066 \\
+0.2429022 & 0.1620662 & -0.1111987 \\
+-0.2287066 & -0.1111987 & 0.0835962
+\end{pmatrix}
+\begin{pmatrix}
+90 \\
+482 \\
+872
+\end{pmatrix}
+\approx
+\begin{pmatrix}
+5.34 \\
+2.96 \\
+-1.30
+\end{pmatrix}
+\]
+
+The fitted model is
+\[
+\hat{Y} = 5.34 + 2.96\,x_1 - 1.30\,x_2.
+\]
+
+\subsection{Important Distinction: Residuals vs.\ Errors}
+
+\begin{notebox}
+Let $\hat{e}_i = Y_i - \bhat{\beta}_0 - \bhat{\beta}_1 x_i$ be the residual (estimated from data) and $\varepsilon_i = Y_i - \beta_0 - \beta_1 x_i$ be the error (true but unobserved). These are different quantities: the first is an estimate, the second is a theoretical construct.
+\end{notebox}
+
+\subsection{Estimate of $\sigma^2$}
+
+Residual sum of squares:
+\[
+\hat{e}_i
+= Y_i - \hat{Y}_i
+= Y_i - \mathbf{x}_i^\top \bhat{\beta},
+\quad i = 1,\dots,n.
+\]
+
+\[
+\RSS
+= \sum_{i=1}^n \hat{e}_i^2
+= \sum_{i=1}^n \left(Y_i - \mathbf{x}_i^\top \bhat{\beta}\right)^2
+= (\mathbf{Y} - \mathbf{X}\bhat{\beta})^\top
+   (\mathbf{Y} -\mathbf{X}\bhat{\beta}).
+\]
+
+Under the regression model assumption:
+\[
+\hat{\sigma}^2
+= \frac{\RSS}{n - (p+1)}
+\]
+is used to estimate $\sigma^2$. The denominator is the number of observations $n$ minus the number of estimated parameters $(p+1)$. In some textbooks, $s^2$ is used to denote $\hat{\sigma}^2$.
+
+\subsection{Interpretation of the Coefficients}
+
+\begin{itemize}
+    \item Fitted regression model:
+    \[
+    \widehat{\E}(Y \mid X=\mathbf{x})
+    = \hat{Y}
+    = \bhat{\beta}_0 + \bhat{\beta}_1 x_1 + \cdots + \bhat{\beta}_p x_p.
+    \]
+
+    \item $\bhat{\beta}_0$: estimated average of $Y \mid X=\mathbf{x}$ when all predictors are $0$.
+
+    \item $\bhat{\beta}_1$: estimated average change in $Y \mid X=\mathbf{x}$ for a one-unit increase in $x_1$, holding all other predictors fixed.
+
+    \item $\vdots$
+
+    \item $\bhat{\beta}_p$: estimated average change in $Y \mid X=\mathbf{x}$ for a one-unit increase in $x_p$, holding all other predictors fixed.
+\end{itemize}
+
+\subsection{Categorical Predictors}
+
+\begin{itemize}
+    \item If a categorical predictor has $k$ categories (or levels) and the model has an intercept, then exactly $k - 1$ dummy variables are created.
+    \item If a categorical predictor has $k$ categories (or levels) and the model does not have an intercept, then exactly $k$ dummy variables should be created.
+\end{itemize}
+
+\subsubsection*{Example: Design Matrix Dimensions with Categorical Predictor}
+
+We have $n = 100$ observations with one response variable, one continuous predictor, and one categorical predictor with $k = 10$ levels, with an intercept included in the model. What is the dimension of the design matrix?
+
+Since the categorical predictor has $10$ levels and the model includes an intercept, we create $k-1 = 9$ dummy variables. Therefore, the design matrix $\mathbf{X}$ has:
+\[
+\text{columns} = 1 \;(\text{intercept}) + 1 \;(\text{continuous predictor}) + 9 \;(\text{dummy variables}) = 11.
+\]
+
+Hence, the dimension of $\mathbf{X}$ is $\boxed{100 \times 11}$.
+
+\subsubsection*{Example: Discrete vs.\ Continuous Predictor}
+
+We have a discrete predictor that takes integer values from $1$ to $100$. Should it be treated as continuous or categorical?
+
+This predictor should typically be treated as \textbf{continuous}, not categorical. Treating it as categorical would require $99$ dummy variables, which is inefficient. The values have a natural ordering and meaningful numerical scale. A continuous treatment preserves degrees of freedom and model interpretability.
+
+\subsection{The Iris Data Example}
+
+Measurements (in cm) of sepal length, sepal width, petal length, and petal width were collected for 50 flowers from each of three species of iris: \emph{setosa}, \emph{versicolor}, and \emph{virginica}. Our goal is to study the linear relationship between petal length (response) and the predictors: sepal length (continuous), sepal width (continuous), and species (categorical). We aim to predict petal length.
+
+Consider predictor data of the form
+\[
+(A, 1), \ (A, -1), \ (C, 0.5), \ (B, 2).
+\]
+
+The fitted model using dummy variables is
+\[
+\widehat{\E}(Y_i \mid X = x_i)
+= \hat{Y}_i
+= \bhat{\beta}_0
++ \bhat{\beta}_1 I(x_i = B)
++ \bhat{\beta}_2 I(x_i = C).
+\]
+
+We create two dummy variables:
+\begin{itemize}
+    \item $I(x_i = B) = 1$ if the predictor category is $B$, and $0$ otherwise;
+    \item $I(x_i = C) = 1$ if the predictor category is $C$, and $0$ otherwise.
+\end{itemize}
+
+Using an intercept and taking category $A$ as the reference level, the design matrix is
+
+\[
+\mathbf{X}
+=
+\begin{pmatrix}
+1 & 0 & 0 \\
+1 & 0 & 0 \\
+1 & 0 & 1 \\
+1 & 1 & 0
+\end{pmatrix},
+\qquad
+\mathbf{Y}
+=
+\begin{pmatrix}
+1 \\
+-1 \\
+0.5 \\
+2
+\end{pmatrix}.
+\]
+
+Assuming the fitted model using dummy variables with \emph{setosa} as the reference category is
+\[
+\widehat{\text{Petal}}_L
+= -1.63
++ 2.17\,I(\text{versicolor})
++ 3.05\,I(\text{virginica})
++ 0.65\,\text{Sepal}_L
+- 0.04\,\text{Sepal}_W.
+\]
+
+\subsubsection*{Example: Interpreting Categorical Coefficients}
+
+\textbf{Question:} How do we interpret the coefficient for the species virginica? What are the dimensions of $\mathbf{X}$?
+
+\textbf{Answer (a):} The coefficient $3.05$ represents the difference in the intercept between \emph{virginica} and the reference species \emph{setosa}, holding sepal length and sepal width fixed. For two flowers with the same sepal length and width, a \emph{virginica} flower is predicted to have a petal length that is $3.05$ cm longer than a \emph{setosa} flower on average.
+
+Fitted equations for each species:
+
+\textbf{Setosa:}
+\[
+\widehat{\text{Petal}}_L
+= -1.63
++ 0.65\,\text{Sepal}_L
+- 0.04\,\text{Sepal}_W.
+\]
+
+\textbf{Versicolor:}
+\[
+\widehat{\text{Petal}}_L
+= (-1.63 + 2.17)
++ 0.65\,\text{Sepal}_L
+- 0.04\,\text{Sepal}_W.
+\]
+
+\textbf{Virginica:}
+\[
+\widehat{\text{Petal}}_L
+= (-1.63 + 3.05)
++ 0.65\,\text{Sepal}_L
+- 0.04\,\text{Sepal}_W.
+\]
+
+\begin{notebox}
+The intercepts for each category are:
+\[
+\bhat{\beta}_0 + \bhat{\beta}_2 = \text{Intercept for virginica},
+\qquad
+\bhat{\beta}_0 + \bhat{\beta}_1 = \text{Intercept for versicolor}.
+\]
+\end{notebox}
+
+\textbf{Answer (b):} Dimensions of the Design Matrix. There are $n = 150$ observations in total. The predictors are: Intercept (1 column), Sepal length (1 column), Sepal width (1 column), Species with 3 levels $\Rightarrow$ $3 - 1 = 2$ dummy variables. Hence, the design matrix $\mathbf{X}$ has dimensions $150 \times 5$.
+
+\clearpage

@@ -1,0 +1,934 @@
+\section{Lecture 4: Complex Predictors, Transformations, and Sampling Distributions}
+
+\subsection{Interaction}
+
+An interaction occurs when a predictor has a different effect on the response depending on the value of another predictor. The usual way of including interactions in a linear model is to add a product term:
+\[
+Y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_1 x_2 + \varepsilon.
+\]
+
+The coefficient $\beta_3$ is estimated in exactly the same way as any other regression coefficient, using ordinary least squares.
+
+\subsection{Diagnostics and Terminology}
+
+Diagnostics for a product term are the same as for any other predictor. The residuals should have the same distribution regardless of the values of $x_i x_j$, and standard diagnostic plots can be made using $x_i x_j$ as the predictor.
+
+The coefficients $\beta_1$ and $\beta_2$ are called the \emph{main effects}, while $\beta_3$ is called the \emph{interaction effect}.
+
+The fitted model is
+\[
+\widehat{\E}(Y \mid X = x) = \hat{Y}
+= \bhat{\beta}_0 + \bhat{\beta}_1 x_1 + \bhat{\beta}_2 x_2 + \bhat{\beta}_3 x_1 x_2.
+\]
+
+\subsection{Interpretation of a Continuous--Continuous Interaction}
+
+Fix all other variables. The effect of one variable depends on the value of another fixed variable.
+
+Given $x_2 = a$:
+\[
+\hat{Y}
+= \bhat{\beta}_0 + \bhat{\beta}_2 a + (\bhat{\beta}_1 + a \bhat{\beta}_3) x_1.
+\]
+
+Here, $\bhat{\beta}_0 + \bhat{\beta}_2 a$ is the intercept, and $\bhat{\beta}_1 + a \bhat{\beta}_3$ is the slope with respect to $x_1$.
+
+\textbf{Interpretation:} Given $x_2 = a$, the average change in the response for a one-unit increase in $x_1$, holding all predictors fixed, is
+\[
+\bhat{\beta}_1 + a \bhat{\beta}_3.
+\]
+
+\subsection{Interactions Between Indicators and a Continuous Predictor}
+
+Each continuous predictor has a different slope for each level of a categorical variable. Consider
+\[
+\hat{Y}
+= \bhat{\beta}_0
++ \bhat{\beta}_1 I(\text{category B})
++ \bhat{\beta}_2 I(\text{category C})
++ \bhat{\beta}_3 x_3
++ \bhat{\beta}_4 I(\text{category B})\,x_3
++ \bhat{\beta}_5 I(\text{category C})\,x_3.
+\]
+
+Each category has a different intercept, and each category has a different slope for $x_3$.
+
+Fixing all other variables, and given category B:
+\[
+\hat{Y}
+= \bhat{\beta}_0 + \bhat{\beta}_1 + (\bhat{\beta}_3 + \bhat{\beta}_4) x_3.
+\]
+
+\textbf{Interpretation:} For observations in category B, the intercept is $\bhat{\beta}_0 + \bhat{\beta}_1$, and the average change in the response for a one-unit increase in $x_3$ is $\bhat{\beta}_3 + \bhat{\beta}_4$. This confirms that the effect of $x_3$ depends on category membership, which is the defining feature of an interaction.
+
+Fixing all other variables, and given category A (the reference category):
+\[
+\hat{Y}
+= \bhat{\beta}_0 + \bhat{\beta}_3 x_3.
+\]
+
+\textbf{Interpretation:} For observations in category A, the intercept is $\bhat{\beta}_0$, and the average change in the response for a one-unit increase in $x_3$ is $\bhat{\beta}_3$.
+
+\subsection{Polynomial Regression}
+
+We can add new predictors as polynomial powers of an existing predictor variable. A polynomial regression model of degree $k$ is
+\[
+Y = \beta_0 + \beta_1 x + \beta_2 x^2 + \cdots + \beta_k x^k + \varepsilon.
+\]
+
+This model is still linear in the parameters when we define
+\[
+x_1 = x, \quad x_2 = x^2, \quad \ldots, \quad x_k = x^k.
+\]
+
+However, the usual interpretation of slope coefficients as constant marginal effects no longer applies when polynomial terms are included.
+
+\subsection{Transformations}
+
+We usually consider transformations when diagnostic plots, such as residual plots, provide strong evidence against the adequacy of the regression model.
+
+The main reasons for applying transformations are to overcome:
+\begin{itemize}
+  \item Problems due to non-linearity.
+  \item Problems due to non-constant variance.
+\end{itemize}
+
+\subsection{General Transformation Framework}
+
+If $Y$ and $X$ are the observed variables, we may fit the model
+\[
+g_y(Y) = \beta_0 + \beta_1 g_x(X) + \varepsilon,
+\]
+where $g_y(\cdot)$ and $g_x(\cdot)$ are transformations applied to the response and predictor, respectively.
+
+\subsection{Common Transformations}
+
+Commonly used transformations include:
+\[
+\text{Logarithmic: } g(x) = \log(x),
+\]
+\[
+\text{Power: } g(x) = x^\lambda \quad (\lambda > 0),
+\]
+\[
+\text{Inverse power: } g(x) = \frac{1}{x^\lambda} \quad (\lambda > 0).
+\]
+
+The function $g$ may represent a transformation of the predictor $g_x$ or of the response $g_y$.
+
+\subsubsection{Transforming the Predictors Only}
+
+If the response is not transformed, then $g_y(Y) = Y$, and the model becomes
+\[
+Y = \beta_0 + \beta_1 g_x(X) + \varepsilon.
+\]
+
+Examples:
+\[
+g_x(x) = \log(x) \quad \Rightarrow \quad Y = \beta_0 + \beta_1 \log(x) + \varepsilon,
+\]
+\[
+g_x(x) = x^\lambda \quad \Rightarrow \quad Y = \beta_0 + \beta_1 x^\lambda + \varepsilon,
+\]
+\[
+g_x(x) = \exp(x) \quad \Rightarrow \quad Y = \beta_0 + \beta_1 \exp(x) + \varepsilon.
+\]
+
+\subsubsection{Transforming the Response Only}
+
+If the predictor is not transformed, then $g_x(X) = X$, and the model becomes
+\[
+g_y(Y) = \beta_0 + \beta_1 X + \varepsilon.
+\]
+
+Examples:
+\[
+g_y(y) = \log(y) \quad \Rightarrow \quad \log(Y) = \beta_0 + \beta_1 X + \varepsilon,
+\]
+\[
+g_y(y) = y^\lambda \quad \Rightarrow \quad Y^\lambda = \beta_0 + \beta_1 X + \varepsilon,
+\]
+\[
+g_y(y) = \exp(y) \quad \Rightarrow \quad \exp(Y) = \beta_0 + \beta_1 X + \varepsilon.
+\]
+
+\subsubsection{Transforming Both Predictors and Response}
+
+In the most general case, both the response and predictor are transformed:
+\[
+g_y(Y) = \beta_0 + \beta_1 g_x(X) + \varepsilon.
+\]
+
+Examples:
+\[
+g(\cdot) = \log(\cdot) \quad \Rightarrow \quad \log(Y) = \beta_0 + \beta_1 \log(X) + \varepsilon,
+\]
+\[
+g(\cdot) = (\cdot)^\lambda \quad \Rightarrow \quad Y^\lambda = \beta_0 + \beta_1 X^\lambda + \varepsilon,
+\]
+\[
+g(\cdot) = \exp(\cdot) \quad \Rightarrow \quad \exp(Y) = \beta_0 + \beta_1 \exp(X) + \varepsilon.
+\]
+
+More specifically, we may use different transformations for $Y$ and $X$:
+\[
+g_y(Y) = \beta_0 + \beta_1 g_x(x) + \varepsilon.
+\]
+
+Examples:
+\begin{itemize}
+  \item $g_y(y) = \log(y)$ and $g_x(x) = \sqrt{x}$
+  $\quad \Rightarrow \quad \log(Y) = \beta_0 + \beta_1 \sqrt{x} + \varepsilon$.
+
+  \item $g_y(y) = y^\lambda$ and $g_x(x) = \log(x)$
+  $\quad \Rightarrow \quad Y^\lambda = \beta_0 + \beta_1 \log(x) + \varepsilon$.
+
+  \item $g_y(y) = \exp(y)$ and $g_x(x) = \sin\!\left(\tfrac{3\pi}{4}x\right)$
+  $\quad \Rightarrow \quad \exp(Y) = \beta_0 + \beta_1 \sin\!\left(\tfrac{3\pi}{4}x\right) + \varepsilon$.
+\end{itemize}
+
+\subsection{Choosing a Transformation}
+
+To choose an appropriate transformation:
+\begin{itemize}
+  \item Plot the response versus predictors to assess potential transformations.
+  \item Plot residuals versus fitted values and versus predictors.
+  \item Choose a transformation that improves the residual plots.
+  \item When both the response $Y$ and the predictor $x$ are measured in the same units, it is often natural to consider the same transformation for both $x$ and $Y$.
+\end{itemize}
+
+\subsection{Advantages and Drawbacks of Transformations}
+
+Transformations may make interpretation of the estimated coefficients more difficult. However, transformations often improve predictive performance.
+
+\subsection{Box--Cox Transformation Method}
+
+The Box--Cox transformation attempts to ``fix'' the residuals by transforming the response variable so that the resulting residuals are approximately normally distributed. The transformation is defined as
+\[
+\psi(Y,\lambda)=
+\begin{cases}
+\mathrm{gm}(Y)^{\,1-\lambda}\,\dfrac{Y^{\lambda}-1}{\lambda}, & \text{if } \lambda \neq 0, \\[1em]
+\mathrm{gm}(Y)\,\log(Y), & \text{if } \lambda = 0,
+\end{cases}
+\]
+where
+\[
+\mathrm{gm}(Y)
+= \prod_{i=1}^{n} Y_i^{1/n}
+= \exp\!\left(\frac{1}{n}\sum_{i=1}^{n}\log(Y_i)\right)
+\]
+is the geometric mean of $Y$.
+
+The Box--Cox transformation uses maximum likelihood to choose the value of $\lambda$ so that the residuals are approximately normally distributed. It is an automatic, likelihood-based method for selecting a transformation and provides a confidence interval for plausible values of $\lambda$.
+
+The Box--Cox transformation is \emph{not} intended to enforce linearity. Instead, it is used to address non-normality and non-constant variance by transforming the response variable, which indirectly improves the behavior of the residuals.
+
+\subsection{Interpreting Transformations of Response and Predictors}
+
+To interpret regression models that use transformations, always remember to incorporate the variables exactly as they appear in the model, such as $\log(Y)$, $\log(x)$, and similar transformed forms.
+
+If a predictor appears squared in the model, then the interpretation is phrased as ``for a one-unit increase in $x^2$.''
+
+When the response variable has been transformed, predicted values represent conditional means on the transformed scale, not on the original measurement scale.
+
+\textbf{Interpretation on the Original Scale:} In general, we do not back-transform fitted values to obtain predictions on the original measurement scale. See Weisberg (2005) and Sheather (2009) for examples where certain transformations admit approximate interpretations on the original scale.
+
+\includegraphics[width = \textwidth]{pictures/boxcox.png}
+
+\subsection{Review: Expectation and Covariance of a Random Vector}
+
+Let $\mathbf{Y} = (Y_1, \dots, Y_n)^{\top}$ be a random column vector.
+
+The expected value of $\mathbf{Y}$ is defined as
+\[
+\E(\mathbf{Y})
+=
+(\E(Y_1), \dots, \E(Y_n))^{\top}.
+\]
+
+The covariance matrix (sometimes called the variance--covariance matrix) of $\mathbf{Y}$ is defined as
+\[
+\Var(\mathbf{Y})
+=
+\Cov(\mathbf{Y})
+=
+\E\!\left[(\mathbf{Y}-\E(\mathbf{Y}))(\mathbf{Y}-\E(\mathbf{Y}))^{\top}\right].
+\]
+
+The matrix $\Var(\mathbf{Y})$ has dimensions $n \times n$. The $(i,j)$-th entry of $\Var(\mathbf{Y})$ represents the covariance between $Y_i$ and $Y_j$.
+
+\textbf{Example ($n=3$):}
+\[
+\E(\mathbf{Y})
+=
+\begin{pmatrix}
+\E(Y_1) \\
+\E(Y_2) \\
+\E(Y_3)
+\end{pmatrix},
+\qquad
+\Var(\mathbf{Y})
+=
+\begin{pmatrix}
+\Var(Y_1) & \Cov(Y_1,Y_2) & \Cov(Y_1,Y_3) \\
+\Cov(Y_2,Y_1) & \Var(Y_2) & \Cov(Y_2,Y_3) \\
+\Cov(Y_3,Y_1) & \Cov(Y_3,Y_2) & \Var(Y_3)
+\end{pmatrix}.
+\]
+
+Note that $\Var(Y_1) = \Cov(Y_1,Y_1)$.
+
+For two random variables:
+\[
+\Cov(Y_1,Y_2) = \E(Y_1Y_2) - \E(Y_1)\E(Y_2).
+\]
+
+\begin{prop}{Properties of Expectation and Variance}{prop:evprop}
+Let $\mathbf{Y}$ be a random column vector of dimension $n$ with mean $\boldsymbol{\mu}$ and covariance matrix $\boldsymbol{\Sigma}$. Let $\mathbf{A}$ be a real matrix of dimension $n \times p$, and let $\mathbf{a} \in \mathbb{R}^p$. Then:
+\[
+\Var(\mathbf{Y}) = \E(\mathbf{Y}\mathbf{Y}^{\top}) - \boldsymbol{\mu}\boldsymbol{\mu}^{\top},
+\]
+\[
+\E(\mathbf{A}^{\top}\mathbf{Y} + \mathbf{a}) = \mathbf{A}^{\top}\boldsymbol{\mu} + \mathbf{a},
+\]
+\[
+\Var(\mathbf{A}^{\top}\mathbf{Y} + \mathbf{a}) = \mathbf{A}^{\top}\boldsymbol{\Sigma}\mathbf{A}.
+\]
+\end{prop}
+
+\clearpage
+
+\section*{Sampling Distributions of the Least Squares Estimators}
+
+Consider the multiple linear regression model:
+\[
+\mathbf{Y} = \mathbf{X}\bbeta + \beps,
+\qquad
+\beps \sim \mathcal{N}_n(\mathbf{0}, \sigma^2 \mathbf{I}_n).
+\]
+
+Then
+\[
+\E(\beps)
+= 0 =
+\begin{pmatrix}
+0 \\[0.2em]
+0 \\[0.2em]
+\vdots \\[0.2em]
+0
+\end{pmatrix},
+\qquad
+\Var(\beps)
+= \sigma^2 \mathbf{I}_n =
+\begin{pmatrix}
+\sigma^2 & 0 & \cdots & 0 \\
+0 & \sigma^2 & \cdots & 0 \\
+\vdots & \vdots & \ddots & \vdots \\
+0 & 0 & \cdots & \sigma^2
+\end{pmatrix}.
+\]
+
+Thus:
+\[
+\Var(\varepsilon_i) = \sigma^2,
+\qquad \text{for } i = 1, \dots, n,
+\]
+\[
+\Cov(\varepsilon_i, \varepsilon_j) = 0,
+\qquad \text{for } i \neq j.
+\]
+
+It follows that
+\[
+\E(\mathbf{Y}) = \mathbf{X}\bbeta,
+\qquad
+\Var(\mathbf{Y}) = \sigma^2 \mathbf{I}_n,
+\]
+and hence
+\[
+\mathbf{Y} \sim \mathcal{N}_n(\mathbf{X}\bbeta, \sigma^2 \mathbf{I}_n).
+\]
+
+The least squares estimator of $\bbeta$ is
+\[
+\bhat{\beta} = (\mathbf{X}^\top \mathbf{X})^{-1}\mathbf{X}^\top \mathbf{Y},
+\]
+which is a random vector.
+
+\subsection{Unbiasedness of the Least Squares Estimator}
+
+Using the model $\mathbf{Y} = \mathbf{X}\bbeta + \beps$:
+
+\[
+\bhat{\beta} - \bbeta
+= (\mathbf{X}^\top \mathbf{X})^{-1}\mathbf{X}^\top \mathbf{Y} - \bbeta
+= (\mathbf{X}^\top \mathbf{X})^{-1}\mathbf{X}^\top (\mathbf{X}\bbeta + \beps) - \bbeta
+= (\mathbf{X}^\top \mathbf{X})^{-1}\mathbf{X}^\top \beps.
+\]
+
+Conditioning on $\mathbf{X}$:
+\[
+\E(\bhat{\beta} - \bbeta \mid \mathbf{X})
+=
+(\mathbf{X}^\top \mathbf{X})^{-1}\mathbf{X}^\top \E(\beps)
+=
+\mathbf{0},
+\]
+since $\E(\beps) = \mathbf{0}$.
+
+By linearity of expectation:
+\[
+\E(\bhat{\beta} \mid \mathbf{X})
+=
+\E(\bbeta \mid \mathbf{X})
+=
+\bbeta.
+\]
+
+Thus, $\bhat{\beta}$ is an unbiased estimator of $\bbeta$.
+
+\subsection{Variance of the Least Squares Estimator}
+
+Using the property $\Var(\mathbf{A}\mathbf{Y}) = \mathbf{A}\,\Var(\mathbf{Y})\,\mathbf{A}^\top$:
+\[
+\Var(\bhat{\beta} - \bbeta \mid \mathbf{X})
+=
+\Var\!\left( (\mathbf{X}^\top \mathbf{X})^{-1}\mathbf{X}^\top \beps \mid \mathbf{X} \right).
+\]
+
+Therefore:
+\[
+\Var(\bhat{\beta} - \bbeta \mid \mathbf{X})
+=
+(\mathbf{X}^\top \mathbf{X})^{-1}\mathbf{X}^\top
+\Var(\beps)
+\mathbf{X}(\mathbf{X}^\top \mathbf{X})^{-1}.
+\]
+
+Substituting $\Var(\beps) = \sigma^2 \mathbf{I}_n$:
+\[
+\Var(\bhat{\beta} - \bbeta \mid \mathbf{X})
+=
+\sigma^2(\mathbf{X}^\top \mathbf{X})^{-1}\mathbf{X}^\top \mathbf{X}(\mathbf{X}^\top \mathbf{X})^{-1}
+=
+\sigma^2(\mathbf{X}^\top \mathbf{X})^{-1}.
+\]
+
+Hence:
+\[
+\Var(\bhat{\beta} \mid \mathbf{X})
+=
+\sigma^2(\mathbf{X}^\top \mathbf{X})^{-1}.
+\]
+
+\begin{keyresult}[Sampling Distribution of the Least Squares Estimator]
+\[
+\bhat{\beta}
+=
+\begin{pmatrix}
+\bhat{\beta}_0 \\
+\bhat{\beta}_1 \\
+\vdots \\
+\bhat{\beta}_p
+\end{pmatrix}
+\sim
+\mathcal{N}_{p+1}\!\left(
+\bbeta,\,
+\sigma^2(\mathbf{X}^\top \mathbf{X})^{-1}
+\right).
+\]
+
+Under the assumption $\beps \sim \mathcal{N}_n(\mathbf{0}, \sigma^2 \mathbf{I}_n)$:
+\[
+\beps \sim \mathcal{N}_n\!\left(\mathbf{0},\, \sigma^2 \mathbf{I}_n\right).
+\]
+\end{keyresult}
+
+\subsection{Simple Linear Regression: Sampling Distribution of \texorpdfstring{$\bhat{\beta}$}{beta-hat}}
+
+Assume the simple linear regression model (with intercept):
+\[
+Y_i = \beta_0 + \beta_1 x_i + \varepsilon_i,
+\qquad i=1,\dots,n,
+\]
+or in matrix form:
+\[
+\mathbf{Y}=\mathbf{X}\bbeta+\beps,
+\qquad
+\beps\sim \mathcal{N}_n(\mathbf{0},\sigma^2\mathbf{I}_n),
+\]
+where
+\[
+\mathbf{Y}=
+\begin{pmatrix}
+Y_1\\ \vdots\\ Y_n
+\end{pmatrix},
+\quad
+\bbeta=
+\begin{pmatrix}
+\beta_0\\ \beta_1
+\end{pmatrix},
+\quad
+\mathbf{X}=
+\begin{pmatrix}
+1 & x_1\\
+\vdots & \vdots\\
+1 & x_n
+\end{pmatrix}.
+\]
+
+\subsubsection{Step 1: Distribution of \texorpdfstring{$\bhat{\beta}$}{beta-hat}}
+
+The least squares estimator is
+\[
+\bhat{\beta}
+=
+(\mathbf{X}^\top \mathbf{X})^{-1}\mathbf{X}^\top \mathbf{Y}.
+\]
+
+Substitute $\mathbf{Y}=\mathbf{X}\bbeta+\beps$:
+\[
+\bhat{\beta}
+=
+(\mathbf{X}^\top \mathbf{X})^{-1}\mathbf{X}^\top(\mathbf{X}\bbeta+\beps)
+=
+\bbeta+(\mathbf{X}^\top \mathbf{X})^{-1}\mathbf{X}^\top\beps.
+\]
+
+Hence:
+\[
+\bhat{\beta}-\bbeta
+=
+(\mathbf{X}^\top \mathbf{X})^{-1}\mathbf{X}^\top\beps.
+\]
+
+Since $\beps\sim \mathcal{N}_n(\mathbf{0},\sigma^2\mathbf{I}_n)$ and a linear transformation of a multivariate normal is multivariate normal:
+\[
+\bhat{\beta} \sim \mathcal{N}_2\!\left(\bbeta,\ \sigma^2(\mathbf{X}^\top\mathbf{X})^{-1}\right).
+\]
+
+\subsubsection{Step 2: Compute $\mathbf{X}^\top\mathbf{X}$ and its Inverse}
+
+Compute $\mathbf{X}^\top$:
+\[
+\mathbf{X}^\top=
+\begin{pmatrix}
+1 & \cdots & 1\\
+x_1 & \cdots & x_n
+\end{pmatrix}.
+\]
+
+Therefore:
+\[
+\mathbf{X}^\top\mathbf{X}
+=
+\begin{pmatrix}
+\sum_{i=1}^n 1 & \sum_{i=1}^n x_i\\[0.4em]
+\sum_{i=1}^n x_i & \sum_{i=1}^n x_i^2
+\end{pmatrix}
+=
+\begin{pmatrix}
+n & \sum_{i=1}^n x_i\\[0.4em]
+\sum_{i=1}^n x_i & \sum_{i=1}^n x_i^2
+\end{pmatrix}.
+\]
+
+Its determinant is:
+\[
+\det(\mathbf{X}^\top\mathbf{X})
+=
+n\sum_{i=1}^n x_i^2-\left(\sum_{i=1}^n x_i\right)^2.
+\]
+
+Using $\bar{x}=\frac{1}{n}\sum_{i=1}^n x_i$:
+\[
+\det(\mathbf{X}^\top\mathbf{X})
+=
+n\sum_{i=1}^n x_i^2-n^2\bar{x}^2
+=
+n\left(\sum_{i=1}^n x_i^2-n\bar{x}^2\right).
+\]
+
+Define
+\[
+s_{xx}=\sum_{i=1}^n (x_i-\bar{x})^2
+=\sum_{i=1}^n x_i^2-2\bar{x}\sum_{i=1}^n x_i+n\bar{x}^2
+=\sum_{i=1}^n x_i^2-n\bar{x}^2,
+\]
+so
+\[
+\det(\mathbf{X}^\top\mathbf{X})=n\,s_{xx}.
+\]
+
+For a $2\times 2$ matrix:
+\[
+\begin{pmatrix}
+a & b\\
+b & d
+\end{pmatrix}^{-1}
+=
+\frac{1}{ad-b^2}
+\begin{pmatrix}
+d & -b\\
+-b & a
+\end{pmatrix}.
+\]
+
+Applying this with $a=n$, $b=\sum x_i$, $d=\sum x_i^2$:
+\[
+(\mathbf{X}^\top\mathbf{X})^{-1}
+=
+\frac{1}{n\sum_{i=1}^n x_i^2-(\sum_{i=1}^n x_i)^2}
+\begin{pmatrix}
+\sum_{i=1}^n x_i^2 & -\sum_{i=1}^n x_i\\[0.4em]
+-\sum_{i=1}^n x_i & n
+\end{pmatrix}.
+\]
+
+Rewrite in terms of $\bar{x}$ and $s_{xx}$. Since $\sum x_i=n\bar{x}$ and $\sum x_i^2 = s_{xx}+n\bar{x}^2$:
+\[
+(\mathbf{X}^\top\mathbf{X})^{-1}
+=
+\frac{1}{n s_{xx}}
+\begin{pmatrix}
+s_{xx}+n\bar{x}^2 & -n\bar{x}\\[0.4em]
+-n\bar{x} & n
+\end{pmatrix}
+=
+\frac{1}{s_{xx}}
+\begin{pmatrix}
+\frac{1}{n}\sum_{i=1}^n x_i^2 & -\bar{x}\\[0.4em]
+-\bar{x} & 1
+\end{pmatrix}.
+\]
+
+\subsubsection{Step 3: Variance Matrix and Individual Variances}
+
+From Step 1:
+\[
+\Var(\bhat{\beta})
+=
+\sigma^2(\mathbf{X}^\top\mathbf{X})^{-1}
+=
+\frac{\sigma^2}{s_{xx}}
+\begin{pmatrix}
+\frac{1}{n}\sum_{i=1}^n x_i^2 & -\bar{x}\\[0.4em]
+-\bar{x} & 1
+\end{pmatrix}.
+\]
+
+Thus:
+\[
+\Var(\bhat{\beta}_0)
+=
+\frac{\sigma^2}{s_{xx}}\left(\frac{1}{n}\sum_{i=1}^n x_i^2\right),
+\qquad
+\Var(\bhat{\beta}_1)
+=
+\frac{\sigma^2}{s_{xx}},
+\qquad
+\Cov(\bhat{\beta}_0,\bhat{\beta}_1)
+=
+-\frac{\sigma^2\bar{x}}{s_{xx}}.
+\]
+
+\begin{keyresult}[Simple Linear Regression Sampling Distribution]
+Since $p=1$ in simple linear regression (intercept + one slope):
+\[
+\bhat{\beta}
+=
+\begin{pmatrix}
+\bhat{\beta}_0\\
+\bhat{\beta}_1
+\end{pmatrix}
+\sim
+\mathcal{N}_2\!\left(
+\begin{pmatrix}
+\beta_0\\
+\beta_1
+\end{pmatrix},
+\ \frac{\sigma^2}{s_{xx}}
+\begin{pmatrix}
+\frac{1}{n}\sum_{i=1}^n x_i^2 & -\bar{x}\\[0.4em]
+-\bar{x} & 1
+\end{pmatrix}
+\right),
+\]
+where $s_{xx}=\sum_{i=1}^n (x_i-\bar{x})^2$.
+\end{keyresult}
+
+\subsection{Estimated Standard Errors}
+
+\[
+\se(\bhat{\beta}_0) = \sqrt{\Var(\bhat{\beta}_0)}.
+\]
+
+\[
+\widehat{\se}(\bhat{\beta}_0)
+= \hat{\sigma}\,
+\sqrt{
+\frac{1}{n}
++
+\frac{\bar{x}^2}{s_{xx}}
+}.
+\]
+
+\[
+\se(\bhat{\beta}_1) = \sqrt{\Var(\bhat{\beta}_1)}.
+\]
+
+\[
+\widehat{\se}(\bhat{\beta}_1)
+=  \hat{\sigma}\,
+\sqrt{
+\frac{1}{s_{xx}}
+}.
+\]
+
+where
+\[
+\hat{\sigma}^2
+=
+\frac{1}{\,n-(p+1)\,}
+\sum_{i=1}^n \left( Y_i - \hat{Y}_i \right)^2 = \frac{\RSS}{n-2}.
+\]
+
+\subsection{Simple Linear Regression for the Iris Data}
+
+We consider the simple linear regression model:
+\[
+\text{Petal}_L = \beta_0 + \beta_1 \,\text{Sepal}_L + \varepsilon,
+\qquad \varepsilon \sim \mathcal{N}(0,\sigma^2).
+\]
+
+The following \texttt{R} code is used to compute the fitted model quantities and the estimated standard errors:
+\begin{verbatim}
+data(iris)
+fit <- lm(Petal.Length ~ Sepal.Length, data = iris)
+fitted_values <- fitted(fit)
+
+y <- iris$Petal.Length
+x <- iris$Sepal.Length
+mean_x <- mean(x)
+
+RSS <- sum((y - fitted_values)^2)
+n.iris <- nrow(iris)
+
+s_xx <- sum((x - mean_x)^2)
+\end{verbatim}
+
+The model summary output is:
+\begin{verbatim}
+Coefficients:
+              Estimate Std. Error t value Pr(>|t|)
+(Intercept)   -7.10144   0.50666   -14.02  <2e-16
+Sepal.Length   1.85843   0.08586    21.65  <2e-16
+\end{verbatim}
+
+The estimated standard errors of the least squares estimators are:
+\[
+\se(\bhat{\beta}_0) = 0.50666,
+\qquad
+\se(\bhat{\beta}_1) = 0.08586.
+\]
+
+\subsection{Multiple Linear Regression for the Iris Data}
+
+We now consider the multiple linear regression model:
+\[
+\text{Petal}_L
+= \beta_0 + \beta_1 \,\text{Sepal}_L + \beta_2 \,\text{Sepal}_W + \varepsilon,
+\qquad \varepsilon \sim \mathcal{N}(0,\sigma^2).
+\]
+
+The corresponding \texttt{R} code is:
+\begin{verbatim}
+data(iris)
+fit <- lm(Petal.Length ~ Sepal.Length + Sepal.Width, data = iris)
+summary(fit)
+\end{verbatim}
+
+The coefficient table from the model output is:
+\begin{verbatim}
+Coefficients:
+              Estimate Std. Error t value Pr(>|t|)
+(Intercept)   -2.52476   0.56344   -4.481  1.48e-05
+Sepal.Length   1.77559   0.06441    27.569  <2e-16
+Sepal.Width   -1.33862   0.12236  -10.940  <2e-16
+\end{verbatim}
+
+The estimated standard errors of the least squares estimators are:
+\[
+\se(\bhat{\beta}_0) = 0.56344,
+\qquad
+\se(\bhat{\beta}_1) = 0.06441,
+\qquad
+\se(\bhat{\beta}_2) = 0.12236.
+\]
+
+\subsection{Interpretation}
+
+Including $\text{Sepal}_W$ in the model reduces the standard error of $\bhat{\beta}_1$ (from $0.08586$ to $0.06441$), indicating increased precision in estimating the effect of sepal length once sepal width is accounted for.
+
+\pagebreak
+
+\section*{Tutorial 1 (January 28)}
+
+\subsection{Problem 1}
+
+Sometimes it is convenient to write the simple linear regression model in a different form. Starting from
+\[
+Y_i = \beta_0 + \beta_1 x_i + \varepsilon_i,
+\]
+add and subtract $\beta_1 \bar{x}$ to obtain
+\[
+Y_i = \beta_0 + \beta_1 \bar{x} + \beta_1(x_i - \bar{x}) + \varepsilon_i
+= \alpha + \beta_1(x_i - \bar{x}) + \varepsilon_i,
+\]
+where $\alpha = \beta_0 + \beta_1 \bar{x}$. This is called the \textbf{deviations-from-the-mean form}.
+
+\subsubsection*{Solution}
+
+\textbf{(1) Meaning of $\alpha$:}
+
+The parameter $\alpha$ represents the expected value of $Y_i$ when $x_i = \bar{x}$. That is:
+\[
+\E[Y_i \mid x_i = \bar{x}] = \alpha.
+\]
+
+\textbf{(2) Least squares estimates:}
+
+The model is
+\[
+Y_i = \alpha + \beta_1(x_i - \bar{x}) + \varepsilon_i.
+\]
+
+The normal equations give
+\[
+\sum_{i=1}^n (Y_i - \hat{\alpha} - \hat{\beta}_1(x_i - \bar{x})) = 0,
+\]
+which implies
+\[
+\hat{\alpha} = \bar{y}.
+\]
+
+For $\beta_1$:
+\[
+\sum_{i=1}^n (x_i - \bar{x})(Y_i - \hat{\alpha} - \hat{\beta}_1(x_i - \bar{x})) = 0,
+\]
+leading to
+\[
+\bhat{\beta}_1 =
+\frac{\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y})}
+{\sum_{i=1}^n (x_i - \bar{x})^2}.
+\]
+
+\subsection{Problem 2}
+
+Consider the simple linear regression model:
+\[
+Y_i = \beta x_i + \varepsilon_i, \quad i = 1,\dots,n.
+\]
+
+Show that the least squares estimate of $\beta$ is
+\[
+\bhat{\beta} = \frac{\sum_{i=1}^n x_i y_i}{\sum_{i=1}^n x_i^2}.
+\]
+
+\subsubsection*{Solution}
+
+The residual sum of squares is:
+\[
+S(\beta) = \sum_{i=1}^n (y_i - \beta x_i)^2.
+\]
+
+Differentiate with respect to $\beta$ and set to zero:
+\[
+\frac{dS}{d\beta} = -2\sum_{i=1}^n x_i(y_i - \beta x_i) = 0.
+\]
+
+Solving gives:
+\[
+\bhat{\beta} = \frac{\sum_{i=1}^n x_i y_i}{\sum_{i=1}^n x_i^2}.
+\]
+
+\subsection{Problem 3}
+
+Show that
+\[
+(y - \mathbf{X}\bhat{\beta})^\top (y - \mathbf{X}\bhat{\beta}) = y^\top y - \bhat{\beta}^\top \mathbf{X}^\top y.
+\]
+
+\subsubsection*{Solution}
+
+Expand the left-hand side:
+\[
+(\bY - \mathbf{X}\bhat{\beta})^\top (\bY - \mathbf{X}\bhat{\beta})
+= \bY^\top \bY - 2\bhat{\beta}^\top \mathbf{X}^\top \bY + \bhat{\beta}^\top \mathbf{X}^\top \mathbf{X} \bhat{\beta}.
+\]
+
+Using the normal equations $\mathbf{X}^\top \mathbf{X} \bhat{\beta} = \mathbf{X}^\top \bY$:
+\[
+\bhat{\beta}^\top \mathbf{X}^\top \mathbf{X} \bhat{\beta} = \bhat{\beta}^\top \mathbf{X}^\top \bY.
+\]
+
+Substituting yields:
+\[
+\bY^\top \bY - \bhat{\beta}^\top \mathbf{X}^\top \bY.
+\]
+
+\subsection{Problem 4}
+
+Consider the simple linear regression:
+\[
+Y_i = \beta_0 + \beta_1 x_i + \varepsilon_i.
+\]
+
+Show that
+\[
+\frac{1}{n}\sum_{i=1}^n \hat{y}_i = \frac{1}{n}\sum_{i=1}^n y_i.
+\]
+
+\subsubsection*{Solution}
+
+The fitted values are $\hat{y}_i = \bhat{\beta}_0 + \bhat{\beta}_1 x_i$. Thus:
+\[
+\frac{1}{n}\sum_{i=1}^n \hat{y}_i
+= \bhat{\beta}_0 + \bhat{\beta}_1 \bar{x}.
+\]
+
+Using $\bhat{\beta}_0 = \bar{y} - \bhat{\beta}_1 \bar{x}$:
+\[
+\frac{1}{n}\sum_{i=1}^n \hat{y}_i = \bar{y}.
+\]
+
+\subsection{Problem 5}
+
+Consider the multiple linear regression:
+\[
+Y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \varepsilon_i.
+\]
+
+\subsubsection*{Solution}
+
+\textbf{(1)} The design matrix $\mathbf{X}$ has columns $(1, x_{i1}, x_{i2})$. Therefore:
+\[
+\mathbf{X}^\top \mathbf{Y} =
+\begin{pmatrix}
+\sum_{i=1}^n y_i \\
+\sum_{i=1}^n x_{i1} y_i \\
+\sum_{i=1}^n x_{i2} y_i
+\end{pmatrix}.
+\]
+
+\textbf{(2)} Similarly:
+\[
+\mathbf{X}^\top \mathbf{X} =
+\begin{pmatrix}
+n & \sum_{i=1}^n x_{i1} & \sum_{i=1}^n x_{i2} \\
+\sum_{i=1}^n x_{i1} & \sum_{i=1}^n x_{i1}^2 & \sum_{i=1}^n x_{i1}x_{i2} \\
+\sum_{i=1}^n x_{i2} & \sum_{i=1}^n x_{i2}x_{i1} & \sum_{i=1}^n x_{i2}^2
+\end{pmatrix}.
+\]
+
+\clearpage

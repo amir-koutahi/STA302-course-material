@@ -1,0 +1,806 @@
+\section{Lecture 5: Inference and Prediction}
+
+\subsection{Guidelines for Transformations}
+
+Finding the appropriate transformation depends on the problem, and there is no universal solution. However, several general guidelines are useful when diagnosing linear regression models.
+
+If diagnostic plots suggest violations of the linearity assumption, transforming the predictors may help achieve a more linear relationship between the response and predictors.
+
+If residual plots indicate non-constant variance or departures from normality, transforming the response variable can help stabilize the variance and improve the distribution of the residuals.
+
+\subsection{Residual Plots with Categorical Predictors}
+
+When residuals are plotted against categorical predictors, the resulting visualization consists of boxplots. The same diagnostic principles apply: residuals should be centered around zero, exhibit similar variability across groups, and show no systematic patterns.
+
+\subsubsection{Example: Residual Diagnostics for the Iris Data}
+
+We consider the linear model
+\[
+\text{Petal.Length} \sim \text{Species} + \text{Sepal.Length}.
+\]
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{pictures/lec5.png}
+    \caption{Linearity satisfied, Normality satisfied, Constant variance not satisfied.}
+\end{figure}
+
+\clearpage
+
+\subsection{Review: Sampling Distributions for Simple Linear Regression}
+
+For simple linear regression, the sampling distributions of the least squares estimators are
+\[
+\bhat{\beta}_0 \mid X
+\sim
+\mathcal{N}
+\!\left(
+\beta_0,\,
+\sigma^2
+\left(
+\frac{1}{n}
++
+\frac{\bar{x}^2}{S_{xx}}
+\right)
+\right),
+\qquad
+\bhat{\beta}_1 \mid X
+\sim
+\mathcal{N}
+\!\left(
+\beta_1,\,
+\frac{\sigma^2}{S_{xx}}
+\right),
+\]
+where
+\[
+S_{xx} = \sum_{i=1}^n (x_i - \bar{x})^2.
+\]
+
+Standardizing these estimators yields
+\[
+Z
+=
+\frac{\bhat{\beta}_0 - \beta_0}
+{\sigma \sqrt{\frac{1}{n} + \frac{\bar{x}^2}{S_{xx}}}}
+\sim \mathcal{N}(0,1),
+\qquad
+Z
+=
+\frac{\bhat{\beta}_1 - \beta_1}
+{\sigma / \sqrt{S_{xx}}}
+\sim \mathcal{N}(0,1).
+\]
+
+For simple linear regression ($p = 1$), the vector of estimators satisfies
+\[
+\bbeta
+=
+\begin{pmatrix}
+\bhat{\beta}_0 \\
+\bhat{\beta}_1
+\end{pmatrix}
+\sim
+\mathcal{N}_2
+\!\left(
+\bbeta,\,
+\sigma^2 (X^\top X)^{-1}
+\right).
+\]
+
+If $\sigma$ were known, these standardized statistics could be used directly to perform hypothesis tests and construct confidence intervals for $\beta_0$ and $\beta_1$. In practice, however, the standard deviation $\sigma$ is usually unknown.
+
+The appropriate remedy is to replace $\sigma^2$ with its unbiased estimator and use the t-test:
+\[
+S^2
+=
+\hat{\sigma}^2
+=
+\frac{1}{n - p - 1}
+\sum_{i=1}^n \hat{e}_i^2
+=
+\frac{\RSS}{n - p - 1}.
+\]
+
+For simple linear regression ($p = 1$), this simplifies to
+\[
+S^2
+=
+\hat{\sigma}^2
+=
+\frac{1}{n - 2}
+\sum_{i=1}^n
+\left(
+y_i - \bhat{\beta}_0 - \bhat{\beta}_1 x_i
+\right)^2.
+\]
+
+\subsection{Inferences About Regression Parameters}
+
+\subsubsection{A) Hypothesis Testing Framework}
+
+Let $\theta$ denote a generic regression parameter (e.g., $\beta_0$ or $\beta_1$). A hypothesis test is defined by
+\[
+H_0 : \theta = \theta_0
+\qquad \text{versus} \qquad
+H_1 : \theta \neq \theta_0,
+\]
+where $\theta_0$ is a specified value under the null hypothesis.
+
+The test is conducted using an appropriate test statistic, whose distribution under $H_0$ is known.
+
+\subsubsection{B) Confidence Interval Framework}
+
+Let $\theta$ denote a parameter of interest. A confidence interval for $\theta$ is given by
+\[
+\hat{\theta}
+\;\pm\;
+(\text{critical value}) \times \se(\hat{\theta}),
+\]
+where the critical value is determined by the appropriate sampling distribution (t or Z test).
+
+\subsection{Test Statistic, p-Value, and Rejection Rule for SLR}
+
+To test
+\[
+H_0 : \beta_1 = \beta_1^\star
+\qquad \text{versus} \qquad
+H_1 : \beta_1 \neq \beta_1^\star,
+\]
+the test statistic is
+\[
+T
+=
+\frac{\bhat{\beta}_1 - \beta_1}
+{\hat{\sigma} / \sqrt{S_{xx}}}
+=
+\frac{\bhat{\beta}_1 - \beta_1}
+{\se(\bhat{\beta}_1)} \sim t_{n-2},
+\]
+and the observed test statistic is
+\[
+T_{\text{obs}}
+=
+\frac{\bhat{\beta}_1 - \beta_1^\star}
+{\se(\bhat{\beta}_1)},
+\]
+where $\se(\bhat{\beta}_1)$ is the estimated standard error of $\bhat{\beta}_1$ (as reported by \texttt{R}).
+
+\vspace{0.5em}
+\hrule
+\vspace{0.5em}
+
+To test
+\[
+H_0 : \beta_0 = \beta_0^\star
+\qquad \text{versus} \qquad
+H_1 : \beta_0 \neq \beta_0^\star,
+\]
+the test statistic is
+\[
+T
+=
+\frac{\bhat{\beta}_0 - \beta_0}
+{\hat{\sigma} \sqrt{\frac{1}{n} + \frac{\bar{x}^2}{S_{xx}}}}
+=
+\frac{\bhat{\beta}_0 - \beta_0}
+{\se(\bhat{\beta}_0)} \sim t_{n-2},
+\]
+and the observed test statistic is
+\[
+T_{\text{obs}}
+=
+\frac{\bhat{\beta}_0 - \beta_0^\star}
+{\se(\bhat{\beta}_0)},
+\]
+where $\se(\bhat{\beta}_0)$ is the estimated standard error of $\bhat{\beta}_0$ (as reported by \texttt{R}).
+
+\vspace{0.5em}
+\hrule
+\vspace{0.5em}
+
+\subsubsection{Test Hypothesis}
+
+The two-sided p-value is
+\[
+\text{p-value}
+=
+2 \, \mathbb{P}
+\bigl(
+|t_{n-2}| \ge |T_{\text{obs}}|
+\bigr).
+\]
+
+The test rejects $H_0$ at significance level $\alpha$ if
+\[
+\text{p-value} < \alpha,
+\quad \text{OR} \quad
+|T_{\text{obs}}| \ge t_{\alpha/2,\,n-2}.
+\]
+
+Here, $t_{\alpha/2,\,n-2}$ is the $100(1-\alpha/2)$th percentile of the $t_{n-2}$ distribution, i.e.,
+\[
+\mathbb{P}\bigl(t_{n-2} > t_{\alpha/2,\,n-2}\bigr) = \alpha/2.
+\]
+
+\subsubsection{Confidence Interval}
+
+A $100(1-\alpha)\%$ confidence interval for $\beta_1$ is given by
+\[
+\bigl(
+\bhat{\beta}_1 - t_{\alpha/2,\,n-2}\,\se(\bhat{\beta}_1),
+\;
+\bhat{\beta}_1 + t_{\alpha/2,\,n-2}\,\se(\bhat{\beta}_1)
+\bigr).
+\]
+
+Here, $t_{\alpha/2,\,n-2}$ is the $100(1-\alpha/2)$th quantile of the $t$-distribution with $n-2$ degrees of freedom.
+
+\vspace{0.5em}
+\hrule
+\vspace{0.5em}
+
+A $100(1-\alpha)\%$ confidence interval for $\beta_0$ is given by
+\[
+\bigl(
+\bhat{\beta}_0 - t_{\alpha/2,\,n-2}\,\se(\bhat{\beta}_0),
+\;
+\bhat{\beta}_0 + t_{\alpha/2,\,n-2}\,\se(\bhat{\beta}_0)
+\bigr).
+\]
+
+Here, $t_{\alpha/2,\,n-2}$ is the $100(1-\alpha/2)$th quantile of the $t$-distribution with $n-2$ degrees of freedom.
+
+\subsection{Clarifications on p-Value and Test Hypothesis}
+
+\begin{itemize}
+\item \textbf{Definition 1:} It is the smallest level of significance at which $H_0$ would be rejected based on the observed data.
+\item \textbf{Definition 2:} It is the probability of observing the result as or more extreme than that actually observed if $H_0$ is true.
+\item In naive terms, the p-value suggests how surprising the observed sample is if we assume $H_0$ to be true.
+\item Conventionally, we compare the p-value to 0.01, 0.05, or 0.1. If the p-value is less than a predefined cut-off, we reject $H_0$.
+\end{itemize}
+
+The hypothesis test rejects $H_0$ at significance level $\alpha$ if
+\[
+\text{p-value} < \alpha,
+\]
+which is equivalent to
+\[
+|T_{\text{obs}}| \ge t_{\alpha/2,\,n-2}.
+\]
+
+\subsubsection{Visualization and Meaning of $t_{0.1,10}$}
+
+\[
+t_{0.10,\,10}
+\;\overset{\text{R}}{=}\;
+\texttt{qt}(0.90, \text{df} = 10).
+\]
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\textwidth]{pictures/t_distribution_df10.png}
+\end{figure}
+
+\subsection{Approach 1: Critical Region Approach ($\alpha$ Known Beforehand)}
+
+\textbf{Idea.} Before observing the data, a significance level $\alpha$ is fixed. This choice determines the rejection regions in the tails of the $t_{n-2}$ distribution.
+
+\textbf{Decision rule.} Compute the test statistic $T_{\text{obs}}$. Reject $H_0$ if
+\[
+|T_{\text{obs}}| \ge t_{\alpha/2,\,n-2}.
+\]
+
+\textbf{Interpretation.} The shaded tail regions have total probability $\alpha$ under $H_0$. If the observed test statistic falls into these regions, it is considered too extreme to be consistent with the null hypothesis.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{pictures/p_value.png}
+\end{figure}
+
+\subsection{Approach 2: p-Value Approach ($\alpha$ Not Fixed Beforehand)}
+
+\textbf{Idea.} First compute how extreme the observed test statistic is, assuming $H_0$ is true. This extremeness is summarized by the p-value.
+
+\textbf{Definition.} For a two-sided test,
+\[
+\text{p-value}
+=
+2\,\mathbb{P}\bigl(|t_{n-2}| \ge |T_{\text{obs}}|\bigr).
+\]
+
+\textbf{Decision rule.} After computing the p-value, reject $H_0$ for any chosen significance level $\alpha$ if
+\[
+\text{p-value} < \alpha.
+\]
+
+\textbf{Interpretation.} The p-value measures the strength of evidence against $H_0$. Smaller p-values indicate stronger evidence against the null hypothesis.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{pictures/critical_region.png}
+\end{figure}
+
+\clearpage
+
+\subsection{SLR Example: Finding CI and Testing Hypothesis Using R Output}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{pictures/lec5outputexample.png}
+\end{figure}
+
+The 95\% confidence interval for $\beta_0$ is
+\[
+\bhat{\beta}_0 \pm t_{0.975,\,1076}\,\se(\bhat{\beta}_0)
+=
+33.8866 \pm 1.96(1.8324)
+=
+(30.30,\; 37.47).
+\]
+
+The 95\% confidence interval for $\beta_1$ is
+\[
+\bhat{\beta}_1 \pm t_{0.975,\,1076}\,\se(\bhat{\beta}_1)
+=
+0.5141 \pm 1.96(0.0271)
+=
+(0.461,\; 0.567).
+\]
+
+To test $H_0:\beta_0=0$, the observed test statistic is
+\[
+T_{\text{obs}} = \frac{33.8866}{1.8324} = 18.49.
+\]
+Since the p-value is $<2\times10^{-16}$ and $|T_{\text{obs}}| > t_{0.025,1076}$, we reject $H_0$.
+
+To test $H_0:\beta_1=0$, the observed test statistic is
+\[
+T_{\text{obs}} = \frac{0.5141}{0.0271} = 19.01.
+\]
+Since the p-value is $<2\times10^{-16}$ and $|T_{\text{obs}}| > t_{0.025,1076}$, we reject $H_0$.
+
+These confidence intervals agree with the output produced directly in \textsf{R}:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{pictures/lec5coef.png}
+\end{figure}
+
+\clearpage
+
+\subsection{Confidence Intervals: Multiple Linear Regression}
+
+For $j = 0,1,\ldots,p$,
+\[
+T_j
+=
+\frac{\bhat{\beta}_j - \beta_j}{\hat{\sigma}_{\bhat{\beta}_j}}
+\;\sim\;
+t_{n-p-1},
+\]
+where
+\[
+\hat{\sigma}_{\bhat{\beta}_j}
+=
+\hat{\sigma}
+\sqrt{(\bX^\top \bX)^{-1}_{\,j+1,\,j+1}}.
+\]
+
+A $100(1-\alpha)\%$ confidence interval for $\beta_j$, $j=0,1,\ldots,p$, is given by
+\[
+\left(
+\bhat{\beta}_j
+-
+t_{\alpha/2,\,n-p-1}\,\hat{\sigma}_{\bhat{\beta}_j},
+\;
+\bhat{\beta}_j
++
+t_{\alpha/2,\,n-p-1}\,\hat{\sigma}_{\bhat{\beta}_j}
+\right),
+\]
+where $t_{\alpha/2,\,n-p-1}$ is the $100(1-\alpha/2)$th quantile of the $t$-distribution with $n-p-1$ degrees of freedom.
+
+\subsection{Prediction}
+
+After fitting the regression model, simple or multiple, we observe a new sample
+\[
+\mathbf{x}^\star = (1, x_1^\star, \ldots, x_p^\star)^\top
+\]
+without observing its response.
+
+If the new sample follows the same linear regression model, its response is
+\[
+Y^\star = \beta_0 + \beta_1 x_1^\star + \cdots + \beta_p x_p^\star + \varepsilon^\star,
+\qquad
+\varepsilon^\star \sim N(0,\sigma^2).
+\]
+
+The predicted response is
+\[
+\hat{Y}^\star = \mathbf{x}^{\star\top}\bbeta.
+\]
+
+\subsubsection{Distribution of $\hat{Y}^\star$}
+
+\[
+\bbeta \sim N_{p+1}\!\left(
+\bbeta,\,
+\sigma^2(\bX^\top\bX)^{-1}
+\right).
+\]
+
+The predicted value $\hat{Y}^\star$ is normally distributed with
+\[
+\E(\hat{Y}^\star)
+=
+\mathbf{x}^{\star\top}\E(\bbeta)
+=
+\mathbf{x}^{\star\top}\bbeta,
+\]
+and
+\[
+\Var(\hat{Y}^\star)
+=
+\Var(\mathbf{x}^{\star\top}\bbeta)
+=
+\mathbf{x}^{\star\top}
+\Var(\bbeta)
+\mathbf{x}^\star
+=
+\sigma^2\,\mathbf{x}^{\star\top}(\bX^\top\bX)^{-1}\mathbf{x}^\star.
+\]
+
+Hence,
+\[
+\hat{Y}^\star
+\sim
+N\!\left(
+\mathbf{x}^{\star\top}\bbeta,\,
+\sigma^2\,\mathbf{x}^{\star\top}(\bX^\top\bX)^{-1}\mathbf{x}^\star
+\right).
+\]
+
+\clearpage
+
+\subsubsection{SLR: Distribution of $\hat{Y}^\star$ and Inference}
+
+In simple linear regression,
+\[
+\bbeta
+=
+\begin{pmatrix}
+\beta_0\\
+\beta_1
+\end{pmatrix},
+\qquad
+\mathbf{x}^\star
+=
+\begin{pmatrix}
+1\\
+x^\star
+\end{pmatrix}.
+\]
+
+Then
+\[
+\mathbf{x}^{\star\top}\bbeta
+=
+\beta_0 + \beta_1 x^\star,
+\]
+and
+\[
+\mathbf{x}^{\star\top}(\bX^\top\bX)^{-1}\mathbf{x}^\star
+=
+\frac{1}{n}
++
+\frac{(\bar{x}-x^\star)^2}{S_{xx}}.
+\]
+
+Thus,
+\[
+\hat{Y}^\star
+\sim
+N\!\left(
+\beta_0 + \beta_1 x^\star,\,
+\sigma^2\!\left(
+\frac{1}{n}
++
+\frac{(\bar{x}-x^\star)^2}{S_{xx}}
+\right)
+\right).
+\]
+
+The estimated standard error of $\hat{Y}^\star$ is
+\[
+\widehat{\se}(\hat{Y}^\star)
+=
+\hat{\sigma}
+\sqrt{
+\frac{1}{n}
++
+\frac{(\bar{x}-x^\star)^2}{S_{xx}}
+}.
+\]
+
+Standardization:
+\[
+\frac{
+\hat{Y}^\star - (\beta_0 + \beta_1 x^\star)
+}{
+\sigma
+\sqrt{
+\frac{1}{n}
++
+\frac{(\bar{x}-x^\star)^2}{S_{xx}}
+}
+}
+\;\sim\;
+N(0,1).
+\]
+
+Replacing $\sigma$ with $\hat{\sigma}$:
+\[
+\frac{
+\hat{Y}^\star - (\beta_0 + \beta_1 x^\star)
+}{
+\hat{\sigma}
+\sqrt{
+\frac{1}{n}
++
+\frac{(\bar{x}-x^\star)^2}{S_{xx}}
+}
+}
+\;\sim\;
+t_{n-2}.
+\]
+
+\begin{keyresult}[Confidence Interval for the Mean Response (SLR)]
+A $100(1-\alpha)\%$ confidence interval for $\E(Y^\star \mid x^\star) = \beta_0 + \beta_1 x^\star$ is
+\[
+\hat{Y}^\star
+\pm
+t_{\alpha/2,\,n-2}\,
+\hat{\sigma}
+\sqrt{
+\frac{1}{n}
++
+\frac{(\bar{x}-x^\star)^2}{S_{xx}}
+}.
+\]
+\end{keyresult}
+
+\subsubsection{MLR: Distribution of $\hat{Y}^\star$ and Inference}
+
+\[
+\hat{Y}^\star
+\sim
+N\!\left(
+\mathbf{x}^{\star\top}\bbeta,
+\;
+\mathbf{x}^{\star\top}\sigma^2(\bX^\top\bX)^{-1}\mathbf{x}^\star
+\right).
+\]
+
+\textbf{Standardize:}
+\[
+\frac{
+\hat{Y}^\star - \mathbf{x}^{\star\top}\bbeta
+}{
+\sigma
+\sqrt{
+\mathbf{x}^{\star\top}(\bX^\top\bX)^{-1}\mathbf{x}^\star
+}
+}
+\;\sim\;
+N(0,1).
+\]
+
+\textbf{Replacing $\sigma$ with $\hat{\sigma}$:}
+\[
+\frac{
+\hat{Y}^\star - \mathbf{x}^{\star\top}\bbeta
+}{
+\hat{\sigma}
+\sqrt{
+\mathbf{x}^{\star\top}(\bX^\top\bX)^{-1}\mathbf{x}^\star
+}
+}
+\;\sim\;
+t_{n-p-1}.
+\]
+
+\begin{keyresult}[Confidence Interval for the Mean Response (MLR)]
+A $100(1-\alpha)\%$ confidence interval for the mean response of $Y^\star$ (given $\mathbf{x}^\star$) is
+\[
+\hat{Y}^\star
+\pm
+t_{\alpha/2,\,n-p-1}\,
+\hat{\sigma}
+\sqrt{
+\mathbf{x}^{\star\top}(\bX^\top\bX)^{-1}\mathbf{x}^\star
+}.
+\]
+\end{keyresult}
+
+\subsection{Prediction Interval for the Actual Value $Y^\star$ (SLR)}
+
+Assume
+\[
+\varepsilon^\star \sim \mathcal{N}(0,\sigma^2)
+\]
+and $\varepsilon^\star$ is independent of $\varepsilon_1,\dots,\varepsilon_n$.
+
+The prediction error is
+\[
+Y^\star - \hat{Y}^\star.
+\]
+
+Its expectation is
+\[
+\E(Y^\star - \hat{Y}^\star) = 0,
+\]
+and its variance is
+\[
+\Var(Y^\star - \hat{Y}^\star)
+= \Var(Y^\star) +\Var(\hat{Y}^\star) =
+\sigma^2
+\left(
+1 + \frac{1}{n} + \frac{(\bar{x}-x^\star)^2}{S_{xx}}
+\right).
+\]
+
+Thus,
+\[
+Y^\star - \hat{Y}^\star
+\sim
+\mathcal{N}\!\left(
+0,
+\;
+\sigma^2
+\left(
+1 + \frac{1}{n} + \frac{(\bar{x}-x^\star)^2}{S_{xx}}
+\right)
+\right).
+\]
+
+Standardizing,
+\[
+\frac{
+Y^\star - \hat{Y}^\star
+}{
+\sigma
+\sqrt{
+1 + \frac{1}{n} + \frac{(\bar{x}-x^\star)^2}{S_{xx}}
+}
+}
+\sim
+\mathcal{N}(0,1).
+\]
+
+Replacing $\sigma$ with $\hat{\sigma}$,
+\[
+\frac{
+Y^\star - \hat{Y}^\star
+}{
+\hat{\sigma}
+\sqrt{
+1 + \frac{1}{n} + \frac{(\bar{x}-x^\star)^2}{S_{xx}}
+}
+}
+\sim
+t_{n-2}.
+\]
+
+\begin{keyresult}[Prediction Interval for the Actual Value (SLR)]
+A $100(1-\alpha)\%$ prediction interval for the actual value $Y^\star$ is
+\[
+\hat{Y}^\star
+\pm
+t_{\alpha/2,\,n-2}
+\;
+\hat{\sigma}
+\sqrt{
+1 + \frac{1}{n} + \frac{(\bar{x}-x^\star)^2}{S_{xx}}
+}.
+\]
+\end{keyresult}
+
+\subsection{Prediction Interval for the Actual Value $Y^\star$ (MLR)}
+
+The prediction error satisfies
+\[
+Y^\star - \hat{Y}^\star
+\sim
+\mathcal{N}\!\left(
+0,
+\;
+\sigma^2
+\left(
+1 +
+\mathbf{x}^{\star\top}
+(\bX^\top \bX)^{-1}
+\mathbf{x}^\star
+\right)
+\right).
+\]
+
+The estimated standard error is
+\[
+\widehat{\se}(Y^\star - \hat{Y}^\star)
+=
+\hat{\sigma}
+\sqrt{
+1 +
+\mathbf{x}^{\star\top}
+(\bX^\top \bX)^{-1}
+\mathbf{x}^\star
+}.
+\]
+
+\begin{keyresult}[Prediction Interval for the Actual Value (MLR)]
+A $100(1-\alpha)\%$ prediction interval for $Y^\star$ is
+\[
+\hat{Y}^\star
+\pm
+t_{\alpha/2,\,n-p-1}
+\;
+\hat{\sigma}
+\sqrt{
+1 +
+\mathbf{x}^{\star\top}
+(\bX^\top \bX)^{-1}
+\mathbf{x}^\star
+}.
+\]
+\end{keyresult}
+
+\clearpage
+
+\subsection{Summary: Confidence vs Prediction Intervals (SLR)}
+
+For a new observation,
+\[
+Y^\star = \beta_0 + \beta_1 x^\star + \varepsilon^\star,
+\qquad
+\varepsilon^\star \sim \mathcal{N}(0,\sigma^2).
+\]
+
+\subsubsection{95\% Confidence Interval (CI) for the Mean Response}
+
+This interval estimates the mean response
+\[
+\E(Y^\star \mid x^\star) = \beta_0 + \beta_1 x^\star.
+\]
+
+\[
+\hat{Y}^\star
+\;\pm\;
+t_{0.025,\,n-2}\;
+\hat{\sigma}
+\sqrt{
+\frac{1}{n}
++
+\frac{(\bar{x} - x^\star)^2}{S_{xx}}
+}.
+\]
+
+\subsubsection{95\% Prediction Interval (PI) for the Actual Value $Y^\star$}
+
+This interval predicts the actual random outcome $Y^\star$.
+
+\[
+\hat{Y}^\star
+\;\pm\;
+t_{0.025,\,n-2}\;
+\hat{\sigma}
+\sqrt{
+\boxed{1}
++
+\frac{1}{n}
++
+\frac{(\bar{x} - x^\star)^2}{S_{xx}}
+}.
+\]
+
+\clearpage

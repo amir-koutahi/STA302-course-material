@@ -1,0 +1,843 @@
+\section{Lecture 7: ANOVA, Model Comparison, and $R^2$}
+
+\subsection{Decomposition of Variation}
+
+For each observation,
+\[
+y_i - \bar{y} = (y_i - \hat{y}_i) + (\hat{y}_i - \bar{y}).
+\]
+
+Total deviation from the mean splits into a residual part and a model-explained part.
+
+\subsection{Sum of Squares}
+
+\begin{defn}{Total Sum of Squares}{def:sst}
+Total variation in $y$:
+\[
+\SST = s_{yy} = \sum_{i=1}^{n}(y_i-\bar{y})^2.
+\]
+\end{defn}
+
+\begin{defn}{Residual Sum of Squares}{def:rss}
+Unexplained variation:
+\[
+\RSS=\sum_{i=1}^{n}(y_i-\hat{y}_i)^2.
+\]
+\end{defn}
+
+\begin{defn}{Regression Sum of Squares}{def:ssreg}
+Variation explained by the model:
+\[
+\SSreg=\sum_{i=1}^{n}(\hat{y}_i-\bar{y})^2.
+\]
+\end{defn}
+
+\subsection{ANOVA Decomposition}
+
+Total variation splits into explained and unexplained parts:
+\[
+\SST = \SSreg + \RSS.
+\]
+
+\textbf{Interpretation:} $\SSreg$ measures variation explained by the regression; $\RSS$ measures variation left in the residuals. If $\hat{y}_i \approx \bar{y}$ for all $i$, then $\SSreg \approx 0$ (model explains little). If many $\hat{y}_i$ differ strongly from $\bar{y}$, then $\SSreg$ is large (model explains substantial variation).
+
+\subsection{Symmetric and Idempotent Matrices}
+
+\begin{defn}{Symmetric Matrix}{def:symmetric}
+A square matrix $A$ is symmetric if $A^\top = A$.
+\end{defn}
+
+\begin{defn}{Idempotent Matrix}{def:idempotent}
+A square matrix $A$ is idempotent if $A^2 = A$.
+\end{defn}
+
+\subsection{Hat Matrix}
+
+The regression projection matrix is
+\[
+H = \bX(\bX^\top \bX)^{-1}\bX^\top.
+\]
+
+The hat matrix satisfies $H^\top = H$ and $H^2 = H$; hence $H$ is symmetric and idempotent.
+
+\textbf{Proof sketch:}
+\[
+H^\top = (\bX(\bX^\top \bX)^{-1}\bX^\top)^\top
+= \bX(\bX^\top \bX)^{-1}\bX^\top
+= H
+\]
+(using $(ABC)^\top = C^\top B^\top A^\top$ and $(A^\top)^{-1} = (A^{-1})^\top$).
+
+For idempotence,
+\[
+H^2 = \bX(\bX^\top \bX)^{-1}\bX^\top \bX(\bX^\top \bX)^{-1}\bX^\top
+= \bX(\bX^\top \bX)^{-1}(\bX^\top \bX)(\bX^\top \bX)^{-1}\bX^\top
+= \bX(\bX^\top \bX)^{-1}\bX^\top = H.
+\]
+
+\subsection{Vector of Ones and Matrix of Ones}
+
+Let
+\[
+\mathbf{1} =
+\begin{pmatrix}
+1\\
+\vdots\\
+1
+\end{pmatrix}, \qquad
+J = \mathbf{1}\mathbf{1}^{\top}.
+\]
+
+Then $J$ is an $n \times n$ matrix of ones:
+\[
+J =
+\begin{pmatrix}
+1 & \cdots & 1\\
+\vdots & \ddots & \vdots\\
+1 & \cdots & 1
+\end{pmatrix}.
+\]
+
+\subsection{Properties of $J$}
+
+\textbf{Dimension:} $n \times n$.
+
+\textbf{Transpose:}
+\[
+J^{\top} = (\mathbf{1}\mathbf{1}^{\top})^{\top}
+= (\mathbf{1}^{\top})^{\top}\mathbf{1}^{\top}
+= \mathbf{1}\mathbf{1}^{\top}
+= J.
+\]
+Thus $J$ is symmetric.
+
+\textbf{Square:}
+\[
+J^2 = (\mathbf{1}\mathbf{1}^{\top})(\mathbf{1}\mathbf{1}^{\top})
+= \mathbf{1}(\mathbf{1}^{\top}\mathbf{1})\mathbf{1}^{\top}.
+\]
+Since $\mathbf{1}^{\top}\mathbf{1}=n$,
+\[
+J^2 = n\mathbf{1}\mathbf{1}^{\top} = nJ.
+\]
+Hence $J$ is symmetric but \emph{not} idempotent.
+
+\subsection{Scaled Ones Matrix}
+
+Define $\frac{1}{n}J$. Then
+
+\textbf{Transpose:}
+\[
+\left(\frac{1}{n}J\right)^{\top}=\frac{1}{n}J.
+\]
+
+\textbf{Square:}
+\[
+\left(\frac{1}{n}J\right)^2
+= \frac{1}{n^2}J^2
+= \frac{1}{n^2}(nJ)
+= \frac{1}{n}J.
+\]
+
+Thus $\frac{1}{n}J$ is symmetric and idempotent.
+
+\begin{notebox}
+\textbf{Euclidean Norm:} For $x=(x_1,\dots,x_n)^{\top}$,
+\[
+\|x\|^2 = \sum_{i=1}^{n}x_i^2 = x^{\top}x.
+\]
+\end{notebox}
+
+\subsection{Residual Maker Matrix}
+
+Define the residual projection matrix
+\[
+M = I - H,
+\]
+where $H = \bX(\bX^{\top}\bX)^{-1}\bX^{\top}$.
+
+\textbf{Symmetry:}
+\[
+(I-H)^{\top} = I^{\top} - H^{\top} = I - H.
+\]
+
+\textbf{Idempotence:}
+\[
+(I-H)^2 = (I-H)(I-H) = I - IH - HI + H^2.
+\]
+Using $IH=HI=H$ and $H^2=H$,
+\[
+(I-H)^2 = I - H - H + H = I - H.
+\]
+
+Thus $I-H$ is symmetric and idempotent.
+
+\subsection{Mean Vector Representation}
+
+Let $y=(y_1,\dots,y_n)^{\top}$ and $\mathbf{1}=(1,\dots,1)^{\top}$. The sample mean is
+\[
+\bar{y}=\frac{1}{n}\sum_{i=1}^n y_i.
+\]
+
+Define the mean vector
+\[
+\bar{y}\,\mathbf{1}=
+\begin{pmatrix}
+\bar{y}\\
+\vdots\\
+\bar{y}
+\end{pmatrix}.
+\]
+
+Using the ones matrix $J=\mathbf{1}\mathbf{1}^{\top}$,
+\[
+\bar{y}\,\mathbf{1}=\frac{1}{n}Jy.
+\]
+
+\subsection{Total Sum of Squares (Matrix Form)}
+
+Total variation:
+\[
+\SST=\sum_{i=1}^n (y_i-\bar{y})^2.
+\]
+
+Vector form:
+\[
+\SST=\|y-\bar{y}\mathbf{1}\|^2.
+\]
+
+Substitute $\bar{y}\mathbf{1}=\frac{1}{n}Jy$:
+\[
+\SST=\left\|y-\frac{1}{n}Jy\right\|^2
+=\left\|(I-\tfrac{1}{n}J)y\right\|^2.
+\]
+
+Using $\|x\|^2=x^{\top}x$:
+\[
+\SST=((I-\tfrac{1}{n}J)y)^{\top}((I-\tfrac{1}{n}J)y)
+= y^{\top}(I-\tfrac{1}{n}J)^{\top}(I-\tfrac{1}{n}J)y.
+\]
+
+Since $(I-\tfrac{1}{n}J)$ is symmetric and idempotent,
+\[
+\SST = y^{\top}(I-\tfrac{1}{n}J)y.
+\]
+
+\subsection{Residual Sum of Squares (Matrix Form)}
+
+Residuals:
+\[
+\hat{y} = Hy.
+\]
+
+Residual vector:
+\[
+e = y-\hat{y} = y-Hy = (I-H)y.
+\]
+
+Residual sum of squares:
+\[
+\RSS=\sum_{i=1}^n (y_i-\hat{y}_i)^2
+=\|y-\hat{y}\|^2.
+\]
+
+Matrix form:
+\[
+\RSS=(y-\hat{y})^{\top}(y-\hat{y})
+=(y-Hy)^{\top}(y-Hy).
+\]
+
+\[
+\RSS=((I-H)y)^{\top}((I-H)y)
+= y^{\top}(I-H)^{\top}(I-H)y.
+\]
+
+Since $I-H$ is symmetric and idempotent,
+\[
+\RSS = y^{\top}(I-H)y.
+\]
+
+\subsection{Matrix $J$ and Its Properties}
+
+Let $\mathbf{1}=(1,\dots,1)^\top \in \mathbb{R}^n$ and define
+\[
+J=\mathbf{1}\mathbf{1}^\top.
+\]
+
+\textbf{Symmetric:} A matrix $A$ is symmetric if $A^\top=A$.
+\[
+\left(\frac{1}{n}J\right)^\top
+=\frac{1}{n}J^\top
+=\frac{1}{n}(\mathbf{1}\mathbf{1}^\top)^\top
+=\frac{1}{n}(\mathbf{1}^\top)^\top \mathbf{1}^\top
+=\frac{1}{n}\mathbf{1}\mathbf{1}^\top
+=\frac{1}{n}J.
+\]
+
+\textbf{Idempotent:} A matrix $A$ is idempotent if $A^2=A$.
+\[
+\left(\frac{1}{n}J\right)^2
+=\frac{1}{n^2}JJ
+=\frac{1}{n^2}\mathbf{1}\mathbf{1}^\top\mathbf{1}\mathbf{1}^\top
+=\frac{1}{n^2}\mathbf{1}(\mathbf{1}^\top\mathbf{1})\mathbf{1}^\top.
+\]
+
+Since $\mathbf{1}^\top\mathbf{1}=n$,
+\[
+\left(\frac{1}{n}J\right)^2
+=\frac{1}{n}\mathbf{1}\mathbf{1}^\top
+=\frac{1}{n}J.
+\]
+
+\subsection{Hat Matrix Properties}
+
+\[
+H = \bX(\bX^\top \bX)^{-1}\bX^\top.
+\]
+
+\textbf{Properties:} $H$ is symmetric ($H^\top=H$) and idempotent ($H^2=H$).
+
+\textbf{Fitted values:}
+\[
+\hat{y} = Hy.
+\]
+
+\textbf{Residuals:}
+\[
+e = y-\hat{y} = (I-H)y.
+\]
+
+\subsection{Interaction Between $H$ and $J$}
+
+\begin{keyresult}[Interaction Property]
+If the intercept is included in the regression,
+\[
+\frac{1}{n}HJ=\frac{1}{n}J, \qquad
+\frac{1}{n}JH=\frac{1}{n}J.
+\]
+\end{keyresult}
+
+If the intercept is included in the regression, then $\mathbf{1}\in\text{col}(\bX)$, so there exists $\alpha$ such that
+\[
+\mathbf{1}=\bX\alpha.
+\]
+
+Then
+\[
+H\mathbf{1}
+= \bX(\bX^\top \bX)^{-1}\bX^\top\mathbf{1}
+= \bX(\bX^\top \bX)^{-1}\bX^\top \bX\alpha
+= \bX\alpha
+= \mathbf{1}.
+\]
+
+Thus
+\[
+\frac{1}{n}HJ
+=\frac{1}{n}H\mathbf{1}\mathbf{1}^\top
+=\frac{1}{n}\mathbf{1}\mathbf{1}^\top
+=\frac{1}{n}J.
+\]
+
+Similarly, $\frac{1}{n}JH=\frac{1}{n}J$.
+
+\subsection{Regression Sum of Squares}
+
+\[
+\SSreg
+=\sum_{i=1}^n(\hat{y}_i-\bar{y})^2
+=\|\hat{y}-\bar{y}\mathbf{1}\|^2.
+\]
+
+Since
+\[
+\hat{y} = Hy, \qquad \bar{y}\mathbf{1}=\frac{1}{n}Jy,
+\]
+
+\[
+\SSreg
+=\|Hy-\tfrac{1}{n}Jy\|^2
+=\|(H-\tfrac{1}{n}J)y\|^2.
+\]
+
+Using $\|Ax\|^2 = x^\top A^\top A x$,
+\[
+\SSreg
+=((H-\tfrac{1}{n}J)y)^\top((H-\tfrac{1}{n}J)y)
+= y^\top(H-\tfrac{1}{n}J)^\top(H-\tfrac{1}{n}J)y.
+\]
+
+Using symmetry and the identities above,
+\[
+\SSreg=y^\top(H-\tfrac{1}{n}J)y.
+\]
+
+\subsection{Matrix Forms of Sums of Squares}
+
+\begin{keyresult}[Matrix Forms]
+\[
+\SST = y^\top\left(I-\frac{1}{n}J\right)y,
+\]
+\[
+\RSS = y^\top(I-H)y,
+\]
+\[
+\SSreg = y^\top\left(H-\frac{1}{n}J\right)y.
+\]
+\end{keyresult}
+
+\subsection{ANOVA Decomposition}
+
+\[
+\SST = \RSS + \SSreg.
+\]
+
+\subsection{ANOVA Decomposition (Scalar Proof)}
+
+\textbf{Goal:}
+\[
+\sum_{i=1}^{n}(y_i-\bar{y})^2
+=
+\sum_{i=1}^{n}(y_i-\hat{y}_i)^2
++
+\sum_{i=1}^{n}(\hat{y}_i-\bar{y})^2.
+\]
+
+Write
+\[
+y_i-\bar{y}=(y_i-\hat{y}_i)+(\hat{y}_i-\bar{y}).
+\]
+
+Square and sum:
+\[
+\sum_{i=1}^{n}(y_i-\bar{y})^2
+=
+\sum_{i=1}^{n}\big[(y_i-\hat{y}_i)+(\hat{y}_i-\bar{y})\big]^2
+\]
+
+\[
+=
+\sum_{i=1}^{n}(y_i-\hat{y}_i)^2
++
+\sum_{i=1}^{n}(\hat{y}_i-\bar{y})^2
++
+2\sum_{i=1}^{n}(y_i-\hat{y}_i)(\hat{y}_i-\bar{y}).
+\]
+
+The cross-product term vanishes (see proof below), so
+\[
+\SST = \RSS + \SSreg.
+\]
+
+\subsection{Proof: $\sum_{i=1}^{n}e_i(\hat{y}_i-\bar{y}) = 0$}
+
+Residuals: $e_i = y_i-\hat{y}_i$. Then
+\[
+\sum_{i=1}^{n} e_i(\hat{y}_i-\bar{y})
+=
+\sum_{i=1}^{n}e_i\hat{y}_i
+-
+\bar{y}\sum_{i=1}^{n}e_i.
+\]
+
+In least squares, $\sum_{i=1}^{n}e_i = 0$. For the first part,
+\[
+\sum_{i=1}^{n} e_i\hat{y}_i
+=
+\sum_{i=1}^{n} e_i
+(\beta_0+\beta_1 x_{i1}+\cdots+\beta_p x_{ip})
+\]
+
+\[
+=
+\beta_0\sum_{i=1}^{n}e_i
++
+\beta_1\sum_{i=1}^{n}e_i x_{i1}
++\cdots+
+\beta_p\sum_{i=1}^{n}e_i x_{ip}.
+\]
+
+The least squares normal equations imply
+\[
+\sum_{i=1}^{n}e_i=0,
+\qquad
+\sum_{i=1}^{n}e_i x_{ij}=0 \quad (j=1,\dots,p).
+\]
+
+Therefore, $\sum_{i=1}^{n} e_i\hat{y}_i = 0$, so $\sum_{i=1}^{n}e_i(\hat{y}_i-\bar{y}) = 0$.
+
+\subsection{Degrees of Freedom}
+
+\[
+\SST=\sum_{i=1}^{n}(y_i-\bar{y})^2
+\quad\text{has } n-1 \text{ degrees of freedom}.
+\]
+
+\[
+\RSS=\sum_{i=1}^{n}(y_i-\hat{y}_i)^2
+\quad\text{has } n-p-1 \text{ degrees of freedom}.
+\]
+
+\[
+\SSreg=\sum_{i=1}^{n}(\hat{y}_i-\bar{y})^2
+\quad\text{has } p \text{ degrees of freedom}.
+\]
+
+\textbf{Check:} $n-1=(n-p-1)+p$.
+
+\subsection{ANOVA F-Test Idea}
+
+Previously, we tested $H_0:\beta_1=0$ using the $t$-statistic
+\[
+T=\frac{\bhat{\beta}_1-0}{\se(\bhat{\beta}_1)}.
+\]
+
+ANOVA provides another way to test whether the predictor contributes to the model.
+
+\subsection{Comparing Two Models}
+
+ANOVA compares two nested models.
+
+\textbf{Model 1 (Reduced model):}
+\[
+Y_i=\beta_0+\varepsilon_i.
+\]
+
+\textbf{Model 2 (Full model):}
+\[
+Y_i=\beta_0+\beta_1 X_i+\varepsilon_i.
+\]
+
+\textbf{Hypothesis test:}
+\[
+H_0:\beta_1=0
+\qquad
+H_1:\beta_1\neq 0.
+\]
+
+Model 1 assumes no relationship between $X$ and $Y$, while Model 2 allows $X$ to explain variation in $Y$.
+
+\subsection{Fitting the Models}
+
+Fit both models and compute predicted values:
+\[
+\hat{y}_i^{(1)} \quad \text{from Model 1},
+\qquad
+\hat{y}_i^{(2)} \quad \text{from Model 2}.
+\]
+
+Residual Sum of Squares:
+\[
+\RSS_1=\sum_{i=1}^{n}(y_i-\hat{y}_i^{(1)})^2,
+\qquad
+\RSS_2=\sum_{i=1}^{n}(y_i-\hat{y}_i^{(2)})^2.
+\]
+
+\textbf{Interpretation:} $\RSS$ measures the amount of variation in $Y$ not explained by the model.
+
+\subsubsection{Why $\RSS_1 \ge \RSS_2$}
+
+For Model 1: $\hat{y}_i^{(1)}=\bar{y}$, so
+\[
+\RSS_1=\sum_{i=1}^{n}(y_i-\bar{y})^2=\SST.
+\]
+
+For Model 2: $\hat{y}_i^{(2)}=\hat{y}_i$, so
+\[
+\RSS_2=\sum_{i=1}^{n}(y_i-\hat{y}_i)^2=\RSS.
+\]
+
+Thus, $\RSS_1 \ge \RSS_2$.
+
+\begin{caution}
+\textbf{Is Model 2 Always Better?} Not necessarily. Model 2 always reduces $\RSS$ because it includes an extra parameter. The key question is whether the reduction is large enough to justify adding $\beta_1$.
+
+If $\RSS_1 \gg \RSS_2$, Model 2 is better.
+If $\RSS_1 \approx \RSS_2$, Model 1 is better.
+\end{caution}
+
+\subsection{Explained Variation}
+
+The reduction in residual variation is $\RSS_1-\RSS_2$. Using the ANOVA identity:
+\[
+\SSreg=\RSS_1-\RSS_2=\SST-\RSS.
+\]
+
+Thus, the regression sum of squares measures how much variation in $Y$ is explained by the predictor.
+
+\subsection{F Distribution}
+
+Let
+\[
+F \sim F(df_1, df_2).
+\]
+
+Then $F$ follows an F-distribution with degrees of freedom $df_1>0$ and $df_2>0$.
+
+\textbf{Key properties:}
+\begin{itemize}
+\item $F \ge 0$ (non-negative).
+\item The distribution is right-skewed.
+\item The exact shape depends on the degrees of freedom.
+\end{itemize}
+
+\subsubsection{Definition of the F Distribution}
+
+If
+\[
+U \sim \chi^2_{df_1}, \qquad V \sim \chi^2_{df_2}
+\]
+and $U$ and $V$ are independent, then
+\[
+F = \frac{U/df_1}{V/df_2}
+\sim F(df_1, df_2).
+\]
+
+Thus, the F distribution is the ratio of two scaled chi-square random variables.
+
+\subsection{Review of Distributions}
+
+\[
+Z \sim N(0,1),
+\]
+\[
+Z^2 \sim \chi^2_1,
+\]
+\[
+t_\nu = \frac{Z}{\sqrt{\chi^2_\nu/\nu}}
+\sim t_\nu,
+\]
+\[
+F_{m,n} =
+\frac{\chi^2_m/m}{\chi^2_n/n}
+\sim F(m,n).
+\]
+
+\subsection{Relationship Between $t$ and $F$}
+
+If
+\[
+t_n = \frac{Z}{\sqrt{\chi^2_n/n}},
+\]
+then
+\[
+t_n^2
+=
+\frac{Z^2}{\chi^2_n/n}
+=
+\frac{\chi^2_1/1}{\chi^2_n/n}.
+\]
+
+Therefore,
+\[
+t_n^2 \sim F(1,n).
+\]
+
+\subsection{Shape of the F Distribution}
+
+\begin{itemize}
+\item \textbf{Support:} $F \ge 0$.
+\item \textbf{Skewness:} Always right-skewed.
+\item \textbf{Degrees of freedom:} Larger degrees of freedom make the distribution less skewed.
+\end{itemize}
+
+\textbf{Example:} $F \sim F(5,11)$ produces a right-skewed distribution.
+
+\subsection{Significance of Linear Relationship}
+
+A linear relationship is significant if a large amount of variation in the response is explained by the model.
+
+\begin{itemize}
+\item $\SSreg$ should be large relative to $\SST$.
+\item $\RSS$ should be small relative to $\SST$.
+\item Overall, we check whether $\SSreg$ is significantly larger than $\RSS$.
+\end{itemize}
+
+\subsection{F Statistic for Testing Simple Regression}
+
+For testing
+\[
+H_0:\beta_1 = 0
+\qquad
+H_1:\beta_1 \neq 0,
+\]
+the ANOVA decomposition suggests the statistic
+\[
+F =
+\frac{\SSreg/1}{\RSS/(n-2)}.
+\]
+
+Under $H_0$,
+\[
+F \sim F_{1,n-2}.
+\]
+
+\subsection{p-Value and Rejection Rule}
+
+\[
+\text{p-value} = P(F_{1,n-2} > F_{\text{obs}}).
+\]
+
+Reject $H_0$ at level $\alpha$ if
+\[
+\text{p-value} < \alpha
+\]
+or equivalently if
+\[
+F_{\text{obs}} \ge F_{\alpha,1,n-2}.
+\]
+
+\textbf{Conclusion:} If $H_0$ is rejected, there is evidence of a statistically significant linear relationship.
+
+\subsection{Mean Squares}
+
+\textbf{Regression mean square:}
+\[
+MS_{\text{reg}} = \frac{\SSreg}{p}.
+\]
+
+\textbf{Residual mean square:}
+\[
+MS_{\text{res}} = \frac{\RSS}{n-p-1}.
+\]
+
+For simple linear regression ($p=1$):
+\[
+F =
+\frac{\SSreg/1}{\RSS/(n-2)}
+=
+\frac{MS_{\text{reg}}}{MS_{\text{res}}}.
+\]
+
+\subsection{ANOVA Table (Simple Linear Regression)}
+
+\begin{center}
+\begin{tabular}{cccccc}
+\hline
+Source & df & Sum of Squares & Mean Square & F \\
+\hline
+Regression & 1 & $\SSreg$ & $\SSreg/1$ & $\frac{\SSreg/1}{\RSS/(n-2)}$ \\
+Residual & $n-2$ & $\RSS$ & $\RSS/(n-2)$ & \\
+Total & $n-1$ & $\SST$ & & \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Relationship Between $F$ and $t$ Tests}
+
+For simple linear regression,
+\[
+F = T^2.
+\]
+
+\textbf{Thus, the ANOVA $F$-test and the $t$-test for $\beta_1$ produce the same p-value.}
+
+\pagebreak
+
+\subsection{F-Test in Multiple Linear Regression}
+
+Suppose the model has $p$ predictors:
+\[
+Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_p X_p + \varepsilon.
+\]
+
+The overall $F$-test checks whether the predictors collectively explain variation in $Y$.
+
+\subsubsection{Hypothesis Test}
+
+\[
+H_0 : \beta_1 = \beta_2 = \cdots = \beta_p = 0
+\]
+\[
+H_1 : \text{at least one } \beta_i \neq 0.
+\]
+
+\textbf{Interpretation:} Under $H_0$, none of the predictors help explain the response.
+
+\subsubsection{Test Statistic}
+
+\[
+F = \frac{MS_{\text{reg}}}{MS_{\text{res}}},
+\]
+where
+\[
+MS_{\text{reg}} = \frac{\SSreg}{p}, \qquad
+MS_{\text{res}} = \frac{\RSS}{n - p - 1}.
+\]
+
+Thus,
+\[
+F = \frac{\SSreg/p}{\RSS/(n-p-1)}.
+\]
+
+Under $H_0$,
+\[
+F \sim F_{p,\,n-p-1}.
+\]
+
+\subsubsection{p-Value}
+
+\[
+p\text{-value} = P\big(F_{p,n-p-1} > F_{\text{obs}}\big),
+\]
+where $F_{\text{obs}}$ is the observed value of the statistic.
+
+\subsubsection{Rejection Rule}
+
+Reject $H_0$ at level $\alpha$ if
+\[
+p\text{-value} < \alpha
+\]
+or equivalently if
+\[
+F_{\text{obs}} \ge F_{\alpha,p,n-p-1}.
+\]
+
+\textbf{Conclusion:} Rejecting $H_0$ implies evidence of a statistically significant linear relationship.
+
+\subsection{ANOVA Table for Multiple Linear Regression}
+
+\begin{center}
+\begin{tabular}{cccccc}
+\hline
+Source & df & Sum of Squares & Mean Square & F \\
+\hline
+Regression & $p$ & $\SSreg$ & $\SSreg/p$ & $\frac{\SSreg/p}{\RSS/(n-p-1)}$ \\
+Residual & $n-p-1$ & $\RSS$ & $\RSS/(n-p-1)$ & \\
+Total & $n-1$ & $\SST$ & & \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Error Variance Estimate}
+
+The estimator of the noise variance is
+\[
+\hat{\sigma}^2 = s^2 = \frac{\RSS}{n-p-1}.
+\]
+
+\subsection{F-Test vs t-Test}
+
+\textbf{t-test:} Tests a single parameter,
+\[
+H_0 : \beta_j = 0.
+\]
+
+\textbf{F-test:} Tests joint significance of predictors,
+\[
+H_0 : \beta_1 = \beta_2 = \cdots = \beta_p = 0.
+\]
+
+\subsection{Why Not Run $p$ t-Tests?}
+
+Running $p$ separate t-tests does not test the joint effect of predictors. The $F$-test evaluates whether the predictors together explain significant variation in $Y$.
+
+\subsection{Multicollinearity}
+
+Multicollinearity refers to high correlation among predictor variables. In such cases:
+\begin{itemize}
+\item Individual $t$-tests may appear insignificant.
+\item The overall $F$-test can still be significant.
+\end{itemize}
+
+\clearpage

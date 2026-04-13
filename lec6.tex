@@ -1,0 +1,146 @@
+\section{Lecture 6: Model Diagnostics and Transformations}
+
+\subsection{Question 1}
+
+Let $\bY$ be an $n \times 1$ vector with 1 as its first element and 0's elsewhere. Consider the linear model
+\[
+y_i = \beta_0 + \beta_1 x_{i1} + \cdots + \beta_p x_{ip} + \varepsilon_i,
+\qquad i = 1,2,\ldots,n.
+\]
+As usual, let
+\[
+\mathbf{H} = \bX(\bX^\top \bX)^{-1}\bX^\top
+\]
+be the hat matrix with elements $h_{ij}$.
+
+\begin{enumerate}
+\item[(a)] Show that the elements of the fitted values from the linear model are $h_{1j}$, $j = 1,2,\ldots,n$.
+
+\vspace{4cm}
+
+\item[(b)] Show that the vector of residuals has $1 - h_{11}$ as its first element, and the other elements are $-h_{1j}$ for $j > 1$.
+
+\vspace{4cm}
+\end{enumerate}
+
+\newpage
+
+\subsection{Question 2}
+
+A regression model was fitted to the \texttt{iris} data, and the output is provided.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{pictures/lec6/lec6,1.png}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{pictures/lec6/lec6,2.png}
+\end{figure}
+
+\begin{enumerate}
+\item[(a)] Write down the corresponding regression model and list its assumptions.
+
+\vspace{4cm}
+
+\item[(b)] Interpret the coefficient of \texttt{Sepal.Length} in the context of this model.
+
+\vspace{4cm}
+
+\item[(c)] Interpret the interaction term $I(\text{Species}=\text{versicolor}) \times \text{Sepal.Length}$. What does it tell you about the relationship between petal length and sepal length for versicolor compared to the reference species setosa?
+
+\vspace{4cm}
+
+\item[(d)] Is there evidence that the effect of sepal length on petal length differs by species? Justify your answer using the regression output.
+
+\vspace{4cm}
+
+\item[(e)] Below are residual plots and a scatterplot matrix.
+
+\begin{enumerate}
+\item[(i)] Are any of the assumptions listed in part (a) satisfied? Clearly explain your answer using all relevant plots.
+
+\vspace{4cm}
+
+\item[(ii)] If any assumptions are violated, explain how you would address them. Clearly state the method(s) you would use.
+
+\vspace{4cm}
+\end{enumerate}
+\end{enumerate}
+
+\newpage
+
+\subsection{Question 3}
+
+We fit the model
+\[
+Y = \beta_0 + \beta_1 x + \varepsilon,
+\]
+where $Y$ is the percentage change in average house price from July 2006 to July 2007 (based on the S\&P/Case-Shiller national housing index), and $x$ is the percentage of mortgage loans that are 30 days or more overdue.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{pictures/lec6/lec6,3.png}
+\end{figure}
+
+\begin{enumerate}
+\item[(a)] Find a 95\% confidence interval for the slope $\beta_1$. Based on this interval, decide whether there is evidence of a significant negative linear association.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.3\linewidth]{pictures/lec6/lec6,4.png}
+\end{figure}
+
+\vspace{4cm}
+
+\item[(b)] Use the fitted regression model to estimate the mean percentage change in average house prices for a mortgage delinquency rate of 4\%. That is, find $\E(Y \mid X = 4)$.
+
+\vspace{4cm}
+
+\item[(c)] Find a 95\% confidence interval for $\E(Y \mid X = 4)$. Is 0\% a feasible value for this mean? Give a reason.
+
+\vspace{4cm}
+
+\item[(d)] Find a 95\% prediction interval for the percentage change in average house prices for a metro area with a mortgage delinquency rate of 4\%.
+
+\vspace{4cm}
+
+\end{enumerate}
+
+\newpage
+
+\subsection{Question 4}
+
+Consider, for $i = 1,\ldots,n$, the following multiple regression model:
+\[
+Y_i
+= \beta_0
++ \beta_1 \sin\!\left(\frac{\pi x_{i1}}{6}\right)
++ \beta_2 \cos\!\left(\frac{\pi x_{i2}}{6}\right)
++ \varepsilon_i,
+\]
+where
+\[
+\E(\varepsilon_i) = 0,
+\qquad
+\Var(\varepsilon_i) = \sigma^2,
+\]
+and the $\varepsilon_i$ are independent and normally distributed.
+
+\begin{enumerate}
+\item[(a)] Can this model be regarded as a multiple linear regression model? If yes, write down the corresponding design matrix. Justify your answer.
+
+\vspace{4cm}
+
+\item[(b)] A diagnostic plot for this model indicates a violation of the normality assumption. To address this issue, a Box-Cox transformation is applied, and
+\[
+\lambda = \frac{1}{3}
+\]
+is found to maximize the log-likelihood function. Write down the transformed model, providing as much detail as possible.
+
+\vspace{4cm}
+
+\end{enumerate}
+
+\clearpage
